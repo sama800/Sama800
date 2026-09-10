@@ -488,20 +488,21 @@
 <script>
 /* ======================= STATE & STORAGE ======================= */
 let DB = { merchants: [], customers: [] };
-const STORAGE_KEY = 'ledger-data-v1';
+const STORAGE_KEY = 'sama_ledger_data_v1';
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
-async function loadDB(){
+function loadDB(){
   try{
-    const res = await window.storage.get(STORAGE_KEY, false);
-    if(res && res.value){ DB = JSON.parse(res.value); }
-  }catch(e){ /* no data yet */ }
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(saved){ DB = JSON.parse(saved); }
+  }catch(e){ console.error('load error', e); }
   renderAll();
 }
-async function saveDB(){
+
+function saveDB(){
   try{
-    await window.storage.set(STORAGE_KEY, JSON.stringify(DB), false);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(DB));
   }catch(e){ console.error('storage error', e); }
 }
 
@@ -706,7 +707,7 @@ function renderAddCustomerTab(){
   }
   document.getElementById('f_saleDate').value = todayISO();
 }
-async function saveNewCustomer(){
+function saveNewCustomer(){
   const name = document.getElementById('f_custName').value.trim();
   const phone = document.getElementById('f_custPhone').value.trim();
   const guarName = document.getElementById('f_guarName').value.trim();
@@ -732,7 +733,7 @@ async function saveNewCustomer(){
     payments: [], history: [{date: todayISO(), action:'إنشاء البطاقة', note:`مبلغ إجمالي ${fmtMoney(amount)}`}]
   };
   DB.customers.push(c);
-  await saveDB();
+  saveDB();
   toast('تم حفظ بطاقة العميل بنجاح');
   ['f_custName','f_custPhone','f_guarName','f_guarPhone','f_purchaseAmount','f_purchaseDuration','f_amount','f_dueDate','f_eReceipt'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f_merchant').value='';
@@ -758,12 +759,12 @@ function renderMerchantTab(){
       </div>`;
   }).join('');
 }
-async function addMerchant(){
+function addMerchant(){
   const name = document.getElementById('f_merchName').value.trim();
   const phone = document.getElementById('f_merchPhone').value.trim();
   if(!name){ toast('الرجاء إدخال اسم التاجر'); return; }
   DB.merchants.push({id: uid(), name, phone});
-  await saveDB();
+  saveDB();
   document.getElementById('f_merchName').value='';
   document.getElementById('f_merchPhone').value='';
   toast('تمت إضافة التاجر');
@@ -1030,7 +1031,7 @@ function openEdit(){
   `;
   openModal('modalEdit');
 }
-async function saveEdit(){
+function saveEdit(){
   const c = DB.customers.find(x=>x.id===currentCustomerId);
   c.name = document.getElementById('e_name').value.trim();
   c.phone = document.getElementById('e_phone').value.trim();
@@ -1044,16 +1045,16 @@ async function saveEdit(){
   c.totalAmount = parseFloat(document.getElementById('e_amount').value) || c.totalAmount;
   c.eReceipt = document.getElementById('e_eReceipt').value.trim();
   c.history.push({date: todayISO(), action:'تعديل بيانات البطاقة'});
-  await saveDB();
+  saveDB();
   closeModal('modalEdit');
   openCustomer(c.id);
   renderAll();
   toast('تم حفظ التعديلات');
 }
-async function deleteCustomer(){
+function deleteCustomer(){
   if(!confirm('هل أنت متأكد من حذف بطاقة هذا العميل؟')) return;
   DB.customers = DB.customers.filter(x=>x.id!==currentCustomerId);
-  await saveDB();
+  saveDB();
   closeModal('modalEdit'); closeModal('modalCustomer');
   renderAll();
   toast('تم حذف بطاقة العميل');
@@ -1072,7 +1073,7 @@ function openPay(){
   `;
   openModal('modalPay');
 }
-async function submitPayment(){
+function submitPayment(){
   const c = DB.customers.find(x=>x.id===currentCustomerId);
   const amt = parseFloat(document.getElementById('p_amount').value);
   const note = document.getElementById('p_note').value.trim();
@@ -1082,7 +1083,7 @@ async function submitPayment(){
   c.history.push({date: todayISO(), action:'سداد دفعة', note: fmtMoney(amt)});
   const fullyPaid = c.paidAmount >= c.totalAmount;
   if(fullyPaid){ c.status = 'paid'; c.history.push({date: todayISO(), action:'اكتمال السداد'}); }
-  await saveDB();
+  saveDB();
   closeModal('modalPay');
   renderAll();
   if(fullyPaid){
@@ -1106,7 +1107,7 @@ function openSettle(){
   `;
   openModal('modalSettle');
 }
-async function submitSettle(){
+function submitSettle(){
   const c = DB.customers.find(x=>x.id===currentCustomerId);
   const amt = parseFloat(document.getElementById('s_amount').value);
   const note = document.getElementById('s_note').value.trim();
@@ -1115,7 +1116,7 @@ async function submitSettle(){
   c.totalAmount = paidSoFar + amt;
   c.status = 'settled';
   c.history.push({date: todayISO(), action:'تسوية الحساب', note: note || ('مبلغ متبقي بعد التسوية: '+fmtMoney(amt))});
-  await saveDB();
+  saveDB();
   closeModal('modalSettle');
   openCustomer(c.id);
   renderAll();
@@ -1135,7 +1136,7 @@ function openReschedule(){
   `;
   openModal('modalReschedule');
 }
-async function submitReschedule(){
+function submitReschedule(){
   const c = DB.customers.find(x=>x.id===currentCustomerId);
   const newDate = document.getElementById('r_date').value;
   const note = document.getElementById('r_note').value.trim();
@@ -1143,7 +1144,7 @@ async function submitReschedule(){
   const oldDate = c.dueDate;
   c.dueDate = newDate;
   c.history.push({date: todayISO(), action:'إعادة جدولة', note: `من ${fmtDate(oldDate)} إلى ${fmtDate(newDate)}${note? ' — '+note:''}`});
-  await saveDB();
+  saveDB();
   closeModal('modalReschedule');
   openCustomer(c.id);
   renderAll();
