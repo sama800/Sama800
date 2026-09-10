@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ركن سما</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Aref+Ruqaa:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#121208;
+    --bg-panel:#1c1c11;
+    --bg-panel-2:#242417;
+    --gold:#c9a227;
+    --gold-light:#e6c65c;
+    --gold-dim:#8a7220;
+    --text:#efe8d6;
+    --text-dim:#a89f86;
+    --border:#38381f;
+    --danger:#b5453b;
+    --danger-bg:#2a1614;
+    --success:#5c8a4e;
+    --success-bg:#16220f;
+    --warn:#c9862a;
+    --warn-bg:#2a1e0b;
+    --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  button{ -webkit-appearance:none; appearance:none; font:inherit; }
+  button:focus, a:focus{ outline:none; }
+  button:focus-visible, a:focus-visible{ outline:1.5px solid var(--gold-dim); outline-offset:2px; }
+  html,body{background:var(--bg); color:var(--text); font-family:'Tajawal',sans-serif; -webkit-tap-highlight-color:transparent;}
+  body{
+    min-height:100vh;
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(201,162,39,0.08), transparent 40%),
+      radial-gradient(circle at 100% 100%, rgba(201,162,39,0.05), transparent 45%);
+  }
+  #app{max-width:520px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; position:relative;}
+
+  /* Header */
+  header.topbar{
+    padding:22px 18px 14px;
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px solid var(--border);
+  }
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-mark{
+    width:46px; height:46px; border-radius:10px;
+    border:1.5px solid var(--gold);
+    position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(circle at 50% 30%, rgba(201,162,39,0.12), transparent 70%);
+  }
+  .brand-mark svg{
+    position:absolute; inset:0; width:100%; height:100%;
+    color:var(--gold); opacity:.4;
+  }
+  .brand-mark .brand-word{
+    position:relative; z-index:1;
+    font-family:'Aref Ruqaa', serif; font-weight:700;
+    color:var(--gold-light); font-size:16px; line-height:1;
+    text-shadow:0 1px 3px rgba(0,0,0,.6);
+  }
+  .brand h1{font-size:19px; font-weight:700; letter-spacing:.3px; color:var(--gold-light);}
+  .brand span{display:block; font-size:11px; color:var(--text-dim); margin-top:1px;}
+  .bell-btn{
+    position:relative; width:38px; height:38px; border-radius:50%;
+    border:1px solid var(--border); background:var(--bg-panel);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .bell-btn svg{width:18px; height:18px; stroke:var(--gold-light);}
+  .bell-dot{
+    position:absolute; top:6px; left:7px; width:9px; height:9px; border-radius:50%;
+    background:var(--danger); border:2px solid var(--bg-panel); display:none;
+  }
+
+  /* Tabs */
+  nav.tabs{
+    display:flex; gap:6px; overflow-x:auto; padding:10px 12px;
+    border-bottom:1px solid var(--border); background:rgba(0,0,0,0.15);
+    scrollbar-width:none;
+  }
+  nav.tabs::-webkit-scrollbar{display:none;}
+  .tab-btn{
+    flex:0 0 auto; padding:9px 15px; border-radius:999px; font-size:13.5px; font-weight:700;
+    color:var(--text-dim); background:transparent; border:1px solid transparent; cursor:pointer;
+    white-space:nowrap; transition:all .15s; -webkit-appearance:none; appearance:none;
+  }
+  .tab-btn:hover, .tab-btn:focus, .tab-btn:focus-visible{
+    color:var(--gold-light); background:rgba(201,162,39,0.10); outline:none;
+  }
+  .tab-btn:active{ background:rgba(201,162,39,0.16); }
+  .tab-btn.active{
+    background:linear-gradient(180deg, var(--gold-light), var(--gold));
+    border-color:var(--gold); color:#1a1608; font-weight:900;
+    box-shadow:0 2px 8px rgba(201,162,39,0.25);
+  }
+  .tab-btn.active:hover, .tab-btn.active:focus{
+    background:linear-gradient(180deg, var(--gold-light), var(--gold));
+    color:#1a1608;
+  }
+
+  main{flex:1; padding:16px 14px 90px;}
+  .view{display:none; animation:fadein .18s ease;}
+  .view.active{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+
+  /* Cards / panels */
+  .panel{
+    background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px; margin-bottom:14px;
+  }
+  .panel-title{font-size:14px; font-weight:700; color:var(--gold-light); margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;}
+
+  .stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;}
+  .stat-card{
+    background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius);
+    padding:14px; position:relative; overflow:hidden;
+  }
+  .stat-card::before{content:''; position:absolute; top:0; right:0; width:3px; height:100%; background:var(--gold-dim);}
+  .stat-card .label{font-size:11.5px; color:var(--text-dim); margin-bottom:6px;}
+  .stat-card .value{font-size:20px; font-weight:900; color:var(--gold-light); font-variant-numeric:tabular-nums;}
+  .stat-card .value.small{font-size:16px;}
+
+  /* Alerts */
+  .alert-item{
+    display:flex; align-items:center; gap:10px; padding:12px; border-radius:10px;
+    background:var(--warn-bg); border:1px solid rgba(201,134,42,0.35); margin-bottom:8px;
+  }
+  .alert-item.overdue{background:var(--danger-bg); border-color:rgba(181,69,59,0.4);}
+  .alert-item .a-icon{width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex:0 0 auto; font-size:15px;}
+  .alert-item.overdue .a-icon{background:rgba(181,69,59,0.2); color:var(--danger);}
+  .alert-item:not(.overdue) .a-icon{background:rgba(201,134,42,0.2); color:var(--warn);}
+  .alert-item .a-body{flex:1; min-width:0;}
+  .alert-item .a-name{font-size:13.5px; font-weight:700;}
+  .alert-item .a-sub{font-size:11.5px; color:var(--text-dim); margin-top:2px;}
+  .wa-btn{
+    flex:0 0 auto; width:36px; height:36px; border-radius:50%; background:#1c1c11;
+    border:1px solid var(--border); display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .wa-btn svg{width:17px; height:17px; fill:#4fce5d;}
+
+  .empty-state{text-align:center; padding:34px 10px; color:var(--text-dim);}
+  .empty-state .e-icon{font-size:30px; margin-bottom:10px; opacity:.6;}
+  .empty-state p{font-size:13px; line-height:1.7;}
+
+  /* Search */
+  .search-box{
+    display:flex; align-items:center; gap:8px; background:var(--bg-panel); border:1px solid var(--border);
+    border-radius:12px; padding:10px 12px; margin-bottom:14px;
+  }
+  .search-box svg{width:16px; height:16px; stroke:var(--text-dim); flex:0 0 auto;}
+  .search-box input{background:transparent; border:none; outline:none; color:var(--text); font-family:inherit; font-size:14px; width:100%;}
+  .search-box input::placeholder{color:var(--text-dim);}
+
+  /* Customer list card */
+  .cust-card{
+    background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius);
+    padding:14px; margin-bottom:10px; cursor:pointer; transition:border-color .15s;
+  }
+  .cust-card:active{border-color:var(--gold-dim);}
+  .cust-top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+  .cust-name{font-size:15px; font-weight:700;}
+  .cust-seller{font-size:11.5px; color:var(--text-dim); margin-top:3px;}
+  .status-pill{font-size:10.5px; font-weight:700; padding:4px 9px; border-radius:999px; flex:0 0 auto;}
+  .status-pill.active{background:rgba(201,162,39,0.15); color:var(--gold-light); border:1px solid var(--gold-dim);}
+  .status-pill.paid{background:var(--success-bg); color:#7fb26e; border:1px solid rgba(92,138,78,0.4);}
+  .status-pill.settled{background:rgba(120,150,220,0.13); color:#8fa8e0; border:1px solid rgba(120,150,220,0.35);}
+  .due-ok{color:var(--success); font-weight:700;}
+  .due-danger{color:var(--danger); font-weight:700;}
+  .cust-meta{display:flex; justify-content:space-between; margin-top:12px; padding-top:12px; border-top:1px dashed var(--border);}
+  .cust-meta .m{font-size:11px; color:var(--text-dim);}
+  .cust-meta .m b{display:block; font-size:13px; color:var(--text); margin-top:3px; font-weight:700;}
+  .progress-bar{height:5px; border-radius:99px; background:#000; margin-top:10px; overflow:hidden;}
+  .progress-fill{height:100%; background:linear-gradient(90deg,var(--gold-dim),var(--gold-light));}
+
+  /* Forms */
+  .field{margin-bottom:13px;}
+  .field label{display:block; font-size:12.5px; color:var(--text-dim); margin-bottom:6px; font-weight:500;}
+  .field input, .field select, .field textarea{
+    width:100%; background:var(--bg-panel-2); border:1px solid var(--border); border-radius:10px;
+    padding:11px 12px; color:var(--text); font-family:inherit; font-size:14px; outline:none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--gold-dim);}
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .hint-box{
+    background:rgba(201,162,39,0.08); border:1px dashed var(--gold-dim); border-radius:10px;
+    padding:10px 12px; font-size:12.5px; color:var(--gold-light); margin-bottom:14px; display:none;
+  }
+
+  .btn{
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    padding:12px 16px; border-radius:11px; font-family:inherit; font-size:14px; font-weight:700;
+    border:1px solid transparent; cursor:pointer; width:100%;
+  }
+  .btn-gold{background:linear-gradient(180deg, var(--gold-light), var(--gold)); color:#181500;}
+  .btn-outline{background:transparent; border-color:var(--border); color:var(--text);}
+  .btn-danger{background:var(--danger-bg); color:#e08278; border-color:rgba(181,69,59,0.4);}
+  .btn-row{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:6px;}
+  .btn-row .btn{padding:11px 6px; font-size:12px;}
+  .btn-sm{padding:8px 12px; font-size:12.5px; width:auto;}
+
+  /* Merchant tab */
+  .merchant-card{background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin-bottom:10px;}
+  .merchant-head{display:flex; justify-content:space-between; align-items:center;}
+  .merchant-head .mh-name{font-size:15px; font-weight:700; color:var(--gold-light);}
+  .merchant-head .mh-phone{font-size:11.5px; color:var(--text-dim); margin-top:2px;}
+  .seller-row{
+    display:flex; justify-content:space-between; align-items:center; padding:9px 0;
+    border-top:1px dashed var(--border); font-size:13px;
+  }
+  .seller-row .s-phone{font-size:11px; color:var(--text-dim);}
+
+  /* Modal */
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:flex-end; justify-content:center;
+    z-index:50; backdrop-filter:blur(2px);
+  }
+  .modal-backdrop.open{display:flex;}
+  .modal-sheet{
+    background:var(--bg-panel); width:100%; max-width:520px; max-height:88vh; overflow-y:auto;
+    border-radius:20px 20px 0 0; padding:18px 18px 26px; border-top:1px solid var(--gold-dim);
+    animation:slideup .2s ease;
+  }
+  @keyframes slideup{from{transform:translateY(30px); opacity:0;} to{transform:none; opacity:1;}}
+  .modal-handle{width:40px; height:4px; background:var(--border); border-radius:99px; margin:0 auto 14px;}
+  .modal-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;}
+  .modal-head h2{font-size:16.5px; font-weight:700; color:var(--gold-light);}
+  .modal-close{width:30px; height:30px; border-radius:50%; background:var(--bg-panel-2); border:1px solid var(--border); color:var(--text-dim); font-size:16px; cursor:pointer;}
+
+  .kv-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;}
+  .kv{background:var(--bg-panel-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px;}
+  .kv .k{font-size:11px; color:var(--text-dim); margin-bottom:4px;}
+  .kv .v{font-size:13.5px; font-weight:700;}
+
+  .receipt{
+    background:#181811; border:1px solid var(--gold-dim); border-radius:14px; padding:18px; text-align:center;
+  }
+  .receipt .r-check{width:50px; height:50px; border-radius:50%; background:var(--success-bg); color:#7fb26e;
+    display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 12px;}
+  .receipt h3{font-size:16px; color:var(--gold-light); margin-bottom:4px;}
+  .receipt .r-amount{font-size:26px; font-weight:900; color:var(--gold-light); margin:10px 0;}
+  .receipt .r-line{display:flex; justify-content:space-between; font-size:12.5px; padding:7px 0; border-top:1px dashed var(--border); color:var(--text-dim);}
+  .receipt .r-line b{color:var(--text); font-weight:700;}
+
+  .section-label{font-size:12px; color:var(--text-dim); font-weight:700; margin:16px 0 8px;}
+  .toast{
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--gold-light); color:#181500;
+    padding:11px 20px; border-radius:99px; font-size:13px; font-weight:700; z-index:99; display:none; box-shadow:0 6px 20px rgba(0,0,0,.4);
+  }
+  .fab-add{
+    position:fixed; bottom:20px; left:50%; transform:translateX(calc(-50% + 220px)); z-index:5;
+  }
+  @media (max-width:520px){ .fab-add{display:none;} }
+
+  ::-webkit-scrollbar{width:6px;} ::-webkit-scrollbar-thumb{background:var(--border); border-radius:99px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <span class="brand-word">سما</span>
+      </div>
+      <div>
+        <h1>ركن سما</h1>
+        <span>إدارة المبيعات الآجلة</span>
+      </div>
+    </div>
+    <div class="bell-btn" onclick="switchTab('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="bell-dot" id="bellDot"></span>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="home" onclick="switchTab('home')">الرئيسية</button>
+    <button class="tab-btn" data-tab="customers" onclick="switchTab('customers')">العملاء</button>
+    <button class="tab-btn" data-tab="addcustomer" onclick="switchTab('addcustomer')">إضافة عميل جديد</button>
+    <button class="tab-btn" data-tab="merchant" onclick="switchTab('merchant')">التاجر</button>
+    <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">التقارير</button>
+  </nav>
+
+  <main>
+    <!-- ================= HOME ================= -->
+    <div class="view active" id="view-home">
+      <div class="stat-grid" id="homeStats"></div>
+      <div class="panel">
+        <div class="panel-title">
+          <span>تنبيهات الاستحصال</span>
+          <span id="alertCount" style="font-size:11px; color:var(--text-dim); font-weight:500;"></span>
+        </div>
+        <div id="alertsList"></div>
+      </div>
+    </div>
+
+    <!-- ================= CUSTOMERS ================= -->
+    <div class="view" id="view-customers">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input id="custSearch" placeholder="ابحث باسم العميل أو رقم الجوال..." oninput="renderCustomersTab()">
+      </div>
+      <div id="customersList"></div>
+    </div>
+
+    <!-- ================= ADD CUSTOMER ================= -->
+    <div class="view" id="view-addcustomer">
+      <div class="panel">
+        <div class="panel-title">بيانات العميل الجديد</div>
+        <div class="field">
+          <label>اسم العميل</label>
+          <input id="f_custName" placeholder="مثال: محمد عبدالله">
+        </div>
+        <div class="field">
+          <label>جوال العميل</label>
+          <input id="f_custPhone" placeholder="05xxxxxxxx" type="tel">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>اسم الكفيل</label>
+            <input id="f_guarName" placeholder="اسم الكفيل">
+          </div>
+          <div class="field">
+            <label>جوال الكفيل</label>
+            <input id="f_guarPhone" placeholder="05xxxxxxxx" type="tel">
+          </div>
+        </div>
+        <div class="field">
+          <label>التاجر</label>
+          <select id="f_merchant"></select>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>تاريخ البيع</label>
+            <input id="f_saleDate" type="date">
+          </div>
+          <div class="field">
+            <label>تاريخ الاستحصال</label>
+            <input id="f_dueDate" type="date">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>مبلغ الشراء (ريال)</label>
+            <input id="f_purchaseAmount" placeholder="0.00" type="number" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label>مدة الشراء (بالأشهر)</label>
+            <input id="f_purchaseDuration" placeholder="مثال: 12" type="number" inputmode="numeric">
+          </div>
+        </div>
+        <div class="field">
+          <label>المبلغ الإجمالي (ريال)</label>
+          <input id="f_amount" placeholder="0.00" type="number" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label>السند الإلكتروني (رقم أو اسم)</label>
+          <input id="f_eReceipt" placeholder="مثال: INV-1024 أو اسم السند">
+        </div>
+        <button class="btn btn-gold" onclick="saveNewCustomer()">حفظ بطاقة العميل</button>
+      </div>
+    </div>
+
+    <!-- ================= MERCHANT ================= -->
+    <div class="view" id="view-merchant">
+      <div class="panel">
+        <div class="panel-title">
+          <span>إضافة تاجر</span>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>اسم التاجر</label><input id="f_merchName" placeholder="اسم التاجر"></div>
+          <div class="field"><label>جوال التاجر</label><input id="f_merchPhone" placeholder="05xxxxxxxx" type="tel"></div>
+        </div>
+        <button class="btn btn-outline" onclick="addMerchant()">+ إضافة تاجر</button>
+      </div>
+
+      <div class="section-label">التجار</div>
+      <div id="merchantList"></div>
+    </div>
+
+    <!-- ================= REPORTS ================= -->
+    <div class="view" id="view-reports">
+      <div class="stat-grid" id="reportStats"></div>
+      <div class="panel">
+        <div class="panel-title">التحصيل حسب التاجر</div>
+        <div id="reportByMerchant"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">تقرير عملاء التاجر</div>
+        <div class="field" style="margin-bottom:12px;">
+          <select id="rep_merchant" onchange="renderMerchantCustomersReport()"></select>
+        </div>
+        <div id="merchantCustomersReport"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">جدول تحصيل العملاء حسب الشهر (جميع التجار)</div>
+        <div id="collectionByMonthReport"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">
+          <span>المبالغ المستحقة هذا الشهر</span>
+          <span id="dueMonthTotal" style="font-size:12.5px; color:var(--gold-light); font-weight:700;"></span>
+        </div>
+        <div id="dueThisMonthReport"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">
+          <span>المبالغ المحصّلة</span>
+          <span id="collectedTotal" style="font-size:12.5px; color:var(--gold-light); font-weight:700;"></span>
+        </div>
+        <div id="collectedReport"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">آخر الحركات</div>
+        <div id="reportActivity"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Customer detail modal -->
+<div class="modal-backdrop" id="modalCustomer">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <h2 id="mcTitle">بطاقة العميل</h2>
+      <button class="modal-close" onclick="closeModal('modalCustomer')">✕</button>
+    </div>
+    <div id="mcBody"></div>
+  </div>
+</div>
+
+<!-- Edit customer modal -->
+<div class="modal-backdrop" id="modalEdit">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-head"><h2>تعديل بيانات العميل</h2><button class="modal-close" onclick="closeModal('modalEdit')">✕</button></div>
+    <div id="editBody"></div>
+  </div>
+</div>
+
+<!-- Payment modal -->
+<div class="modal-backdrop" id="modalPay">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-head"><h2>تسجيل سداد</h2><button class="modal-close" onclick="closeModal('modalPay')">✕</button></div>
+    <div id="payBody"></div>
+  </div>
+</div>
+
+<!-- Settlement modal -->
+<div class="modal-backdrop" id="modalSettle">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-head"><h2>تسوية الحساب</h2><button class="modal-close" onclick="closeModal('modalSettle')">✕</button></div>
+    <div id="settleBody"></div>
+  </div>
+</div>
+
+<!-- Reschedule modal -->
+<div class="modal-backdrop" id="modalReschedule">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-head"><h2>إعادة جدولة الاستحصال</h2><button class="modal-close" onclick="closeModal('modalReschedule')">✕</button></div>
+    <div id="reschedBody"></div>
+  </div>
+</div>
+
+<!-- Receipt modal -->
+<div class="modal-backdrop" id="modalReceipt">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-head"><h2>سند السداد</h2><button class="modal-close" onclick="closeModal('modalReceipt')">✕</button></div>
+    <div id="receiptBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ======================= STATE & STORAGE ======================= */
+let DB = { merchants: [], customers: [] };
+const STORAGE_KEY = 'ledger-data-v1';
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+async function loadDB(){
+  try{
+    const res = await window.storage.get(STORAGE_KEY, false);
+    if(res && res.value){ DB = JSON.parse(res.value); }
+  }catch(e){ /* no data yet */ }
+  renderAll();
+}
+async function saveDB(){
+  try{
+    await window.storage.set(STORAGE_KEY, JSON.stringify(DB), false);
+  }catch(e){ console.error('storage error', e); }
+}
+
+/* ======================= UTIL ======================= */
+function fmtMoney(n){
+  n = Number(n)||0;
+  return n.toLocaleString('ar-SA', {maximumFractionDigits:0}) + ' ر.س';
+}
+function fmtDate(d){
+  if(!d) return '—';
+  const dt = new Date(d+'T00:00:00');
+  if(isNaN(dt)) return d;
+  return dt.toLocaleDateString('ar-SA-u-ca-gregory', {year:'numeric', month:'long', day:'numeric'});
+}
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function daysBetween(dateISO){
+  const a = new Date(todayISO()+'T00:00:00');
+  const b = new Date(dateISO+'T00:00:00');
+  return Math.round((b-a)/(1000*60*60*24));
+}
+function waPhone(phone){
+  let p = (phone||'').replace(/[^0-9]/g,'');
+  if(p.startsWith('00')) p = p.slice(2);
+  if(p.startsWith('0')) p = '966' + p.slice(1);
+  if(!p.startsWith('966') && p.length===9) p = '966'+p;
+  return p;
+}
+function waLink(phone, text){
+  return 'https://wa.me/'+waPhone(phone)+'?text='+encodeURIComponent(text);
+}
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display='block';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=>{ t.style.display='none'; }, 2200);
+}
+function getMerchant(id){ return DB.merchants.find(m=>m.id===id); }
+function merchantInfo(merchantId){
+  const m = getMerchant(merchantId);
+  if(!m) return {merchantName:'—', merchantPhone:'—'};
+  return {merchantName:m.name, merchantPhone:m.phone||'—'};
+}
+function remaining(c){ return Math.max(0, Number(c.totalAmount) - Number(c.paidAmount||0)); }
+function statusLabel(c){
+  if(c.status==='paid') return {t:'مسدد بالكامل', cls:'paid'};
+  if(c.status==='settled') return {t:'تمت التسوية', cls:'settled'};
+  return {t:'نشط', cls:'active'};
+}
+function dueUrgency(c){
+  if(c.status!=='active') return {cls:'due-ok', text: c.status==='paid'?'مسدد بالكامل':'تمت التسوية'};
+  const days = daysBetween(c.dueDate);
+  if(days < 0) return {cls:'due-danger', text:`متأخر ${Math.abs(days)} يوم`};
+  if(days === 0) return {cls:'due-danger', text:'مستحق اليوم'};
+  if(days <= 30) return {cls:'due-danger', text:`متبقي ${days} يوم`};
+  return {cls:'due-ok', text:`متبقي ${days} يوم`};
+}
+
+/* ======================= TABS ======================= */
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+tab).classList.add('active');
+  if(tab==='home') renderHome();
+  if(tab==='customers') renderCustomersTab();
+  if(tab==='addcustomer') renderAddCustomerTab();
+  if(tab==='merchant') renderMerchantTab();
+  if(tab==='reports') renderReportsTab();
+}
+
+function renderAll(){
+  renderHome();
+  renderCustomersTab();
+  renderAddCustomerTab();
+  renderMerchantTab();
+  renderReportsTab();
+}
+
+/* ======================= HOME ======================= */
+function getAlerts(){
+  return DB.customers
+    .filter(c=>c.status==='active')
+    .map(c=>({c, days: daysBetween(c.dueDate)}))
+    .filter(x=>x.days<=30)
+    .sort((a,b)=>a.days-b.days);
+}
+
+function renderHome(){
+  const totalCustomers = DB.customers.length;
+  const totalSales = DB.customers.reduce((s,c)=>s+Number(c.totalAmount||0),0);
+  const totalCollected = DB.customers.reduce((s,c)=>s+Number(c.paidAmount||0),0);
+  const totalRemaining = DB.customers.reduce((s,c)=> s + remaining(c), 0);
+
+  document.getElementById('homeStats').innerHTML = `
+    <div class="stat-card"><div class="label">عدد العملاء</div><div class="value">${totalCustomers}</div></div>
+    <div class="stat-card"><div class="label">إجمالي المبيعات</div><div class="value small">${fmtMoney(totalSales)}</div></div>
+    <div class="stat-card"><div class="label">المحصّل</div><div class="value small">${fmtMoney(totalCollected)}</div></div>
+    <div class="stat-card"><div class="label">المتبقي</div><div class="value small">${fmtMoney(totalRemaining)}</div></div>
+  `;
+
+  const alerts = getAlerts();
+  document.getElementById('bellDot').style.display = alerts.length? 'block':'none';
+  document.getElementById('alertCount').textContent = alerts.length ? (alerts.length+' عميل') : '';
+
+  const list = document.getElementById('alertsList');
+  if(!alerts.length){
+    list.innerHTML = `<div class="empty-state"><div class="e-icon">✓</div><p>لا توجد مواعيد استحصال قريبة حالياً</p></div>`;
+    return;
+  }
+  list.innerHTML = alerts.map(({c,days})=>{
+    const overdue = days<0;
+    const urg = dueUrgency(c);
+    const msg = `مرحباً ${c.name}، تذكير بأن تاريخ استحصال المبلغ المتبقي (${fmtMoney(remaining(c))}) بتاريخ ${fmtDate(c.dueDate)}. نأمل الاستعداد للسداد. شاكرين تعاونكم.`;
+    return `
+      <div class="alert-item ${overdue?'overdue':''}">
+        <div class="a-icon">${overdue?'!':'⏰'}</div>
+        <div class="a-body" onclick="openCustomer('${c.id}')">
+          <div class="a-name">${c.name}</div>
+          <div class="a-sub"><span class="${urg.cls}">${urg.text}</span> · ${fmtMoney(remaining(c))}</div>
+        </div>
+        <a class="wa-btn" href="${waLink(c.phone, msg)}" target="_blank" rel="noopener" title="إرسال تذكير واتساب">
+          <svg viewBox="0 0 24 24"><path d="M17.6 6.3A8.6 8.6 0 0 0 3.8 16.9L3 21l4.2-.8a8.6 8.6 0 0 0 12.4-7.7 8.6 8.6 0 0 0-2-6.2zM12 19.4a7.3 7.3 0 0 1-3.7-1l-.3-.2-2.5.5.5-2.4-.2-.3A7.4 7.4 0 1 1 12 19.4zm4-5.5c-.2-.1-1.3-.6-1.5-.7-.2-.1-.3-.1-.5.1-.1.2-.5.7-.7.8-.1.2-.3.2-.5.1a6 6 0 0 1-1.8-1.1 6.6 6.6 0 0 1-1.2-1.5c-.1-.2 0-.3.1-.5l.4-.4.2-.4v-.4c-.1-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-.9 2.2c0 1.3 1 2.6 1.1 2.7.1.2 2 3 4.7 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.3-.6 1.5-1.1.2-.5.2-1 .1-1.1-.1-.1-.2-.2-.4-.3z"/></svg>
+        </a>
+      </div>`;
+  }).join('');
+}
+
+/* ======================= CUSTOMERS TAB ======================= */
+function fullCustomerCardHTML(c){
+  const mi = merchantInfo(c.merchantId);
+  const st = statusLabel(c);
+  const urg = dueUrgency(c);
+  return `
+    <div class="cust-card" onclick="openCustomer('${c.id}')">
+      <div class="cust-top">
+        <div>
+          <div class="cust-name">${c.name}</div>
+          <div class="cust-seller">التاجر: ${mi.merchantName}</div>
+        </div>
+        <span class="status-pill ${st.cls}">${st.t}</span>
+      </div>
+      <div class="kv-grid" style="margin-top:12px; margin-bottom:0;">
+        <div class="kv"><div class="k">جوال العميل</div><div class="v">${c.phone||'—'}</div></div>
+        <div class="kv"><div class="k">اسم الكفيل</div><div class="v">${c.guarantorName||'—'}</div></div>
+        <div class="kv"><div class="k">جوال الكفيل</div><div class="v">${c.guarantorPhone||'—'}</div></div>
+        <div class="kv"><div class="k">جوال التاجر</div><div class="v">${mi.merchantPhone}</div></div>
+        <div class="kv"><div class="k">تاريخ البيع</div><div class="v">${fmtDate(c.saleDate)}</div></div>
+        <div class="kv"><div class="k">تاريخ الاستحصال</div><div class="v ${urg.cls}">${fmtDate(c.dueDate)}</div></div>
+        <div class="kv"><div class="k">مبلغ الشراء</div><div class="v">${c.purchaseAmount? fmtMoney(c.purchaseAmount):'—'}</div></div>
+        <div class="kv"><div class="k">مدة الشراء</div><div class="v">${c.purchaseDuration? c.purchaseDuration+' شهر':'—'}</div></div>
+        <div class="kv"><div class="k">المبلغ الإجمالي</div><div class="v">${fmtMoney(c.totalAmount)}</div></div>
+        <div class="kv"><div class="k">المتبقي</div><div class="v">${fmtMoney(remaining(c))}</div></div>
+        <div class="kv" style="grid-column:1 / -1;"><div class="k">الحالة الزمنية</div><div class="v ${urg.cls}">${urg.text}</div></div>
+      </div>
+    </div>`;
+}
+
+function renderCustomersTab(){
+  const q = (document.getElementById('custSearch').value||'').trim();
+  const list = document.getElementById('customersList');
+  let items = DB.customers.slice().sort((a,b)=> new Date(a.dueDate) - new Date(b.dueDate));
+  if(q){
+    items = items.filter(c => c.name.includes(q) || (c.phone||'').includes(q));
+  }
+  if(!items.length){
+    list.innerHTML = `<div class="empty-state"><div class="e-icon">📇</div><p>لا يوجد عملاء بعد.<br>اضغط "إضافة عميل جديد" للبدء</p></div>`;
+    return;
+  }
+  list.innerHTML = items.map(c=>{
+    const mi = merchantInfo(c.merchantId);
+    const st = statusLabel(c);
+    const urg = dueUrgency(c);
+    const pct = c.totalAmount>0 ? Math.min(100, Math.round((Number(c.paidAmount||0)/Number(c.totalAmount))*100)) : 0;
+    return `
+      <div class="cust-card" onclick="openCustomer('${c.id}')">
+        <div class="cust-top">
+          <div>
+            <div class="cust-name">${c.name}</div>
+            <div class="cust-seller">التاجر: ${mi.merchantName}</div>
+          </div>
+          <span class="status-pill ${st.cls}">${st.t}</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div class="cust-meta">
+          <div class="m">الإجمالي<b>${fmtMoney(c.totalAmount)}</b></div>
+          <div class="m">المتبقي<b>${fmtMoney(remaining(c))}</b></div>
+          <div class="m">الاستحصال<b>${fmtDate(c.dueDate)}</b></div>
+        </div>
+        ${c.status==='active' ? `<div style="margin-top:9px; font-size:12px;" class="${urg.cls}">${urg.text}</div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+/* ======================= ADD CUSTOMER TAB ======================= */
+function renderAddCustomerTab(){
+  const sel = document.getElementById('f_merchant');
+  if(!DB.merchants.length){
+    sel.innerHTML = `<option value="">لا يوجد تجار بعد — أضف تاجراً أولاً من تبويب التاجر</option>`;
+  } else {
+    sel.innerHTML = `<option value="">اختر التاجر...</option>` + DB.merchants.map(m=>{
+      return `<option value="${m.id}">${m.name}</option>`;
+    }).join('');
+  }
+  document.getElementById('f_saleDate').value = todayISO();
+}
+async function saveNewCustomer(){
+  const name = document.getElementById('f_custName').value.trim();
+  const phone = document.getElementById('f_custPhone').value.trim();
+  const guarName = document.getElementById('f_guarName').value.trim();
+  const guarPhone = document.getElementById('f_guarPhone').value.trim();
+  const merchantId = document.getElementById('f_merchant').value;
+  const saleDate = document.getElementById('f_saleDate').value;
+  const dueDate = document.getElementById('f_dueDate').value;
+  const purchaseAmount = parseFloat(document.getElementById('f_purchaseAmount').value) || 0;
+  const purchaseDuration = parseInt(document.getElementById('f_purchaseDuration').value) || 0;
+  const amount = parseFloat(document.getElementById('f_amount').value);
+  const eReceipt = document.getElementById('f_eReceipt').value.trim();
+
+  if(!name || !phone){ toast('الرجاء إدخال اسم العميل وجواله'); return; }
+  if(!merchantId){ toast('الرجاء اختيار التاجر'); return; }
+  if(!saleDate || !dueDate){ toast('الرجاء إدخال تاريخ البيع وتاريخ الاستحصال'); return; }
+  if(!amount || amount<=0){ toast('الرجاء إدخال مبلغ صحيح'); return; }
+
+  const c = {
+    id: uid(), name, phone, guarantorName: guarName, guarantorPhone: guarPhone,
+    merchantId, saleDate, dueDate, originalDueDate: dueDate,
+    purchaseAmount, purchaseDuration, eReceipt,
+    totalAmount: amount, paidAmount: 0, status:'active',
+    payments: [], history: [{date: todayISO(), action:'إنشاء البطاقة', note:`مبلغ إجمالي ${fmtMoney(amount)}`}]
+  };
+  DB.customers.push(c);
+  await saveDB();
+  toast('تم حفظ بطاقة العميل بنجاح');
+  ['f_custName','f_custPhone','f_guarName','f_guarPhone','f_purchaseAmount','f_purchaseDuration','f_amount','f_dueDate','f_eReceipt'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f_merchant').value='';
+  renderAll();
+  switchTab('customers');
+}
+
+/* ======================= MERCHANT TAB ======================= */
+function renderMerchantTab(){
+  const list = document.getElementById('merchantList');
+  if(!DB.merchants.length){
+    list.innerHTML = `<div class="empty-state"><div class="e-icon">🏬</div><p>لا يوجد تجار بعد</p></div>`;
+    return;
+  }
+  list.innerHTML = DB.merchants.map(m=>{
+    const count = DB.customers.filter(c=>c.merchantId===m.id).length;
+    return `
+      <div class="merchant-card">
+        <div class="merchant-head">
+          <div><div class="mh-name">${m.name}</div><div class="mh-phone">${m.phone||'—'}</div></div>
+          <span class="status-pill active">${count} عميل</span>
+        </div>
+      </div>`;
+  }).join('');
+}
+async function addMerchant(){
+  const name = document.getElementById('f_merchName').value.trim();
+  const phone = document.getElementById('f_merchPhone').value.trim();
+  if(!name){ toast('الرجاء إدخال اسم التاجر'); return; }
+  DB.merchants.push({id: uid(), name, phone});
+  await saveDB();
+  document.getElementById('f_merchName').value='';
+  document.getElementById('f_merchPhone').value='';
+  toast('تمت إضافة التاجر');
+  renderMerchantTab(); renderAddCustomerTab();
+}
+
+/* ======================= REPORTS TAB ======================= */
+function renderReportsTab(){
+  const totalSales = DB.customers.reduce((s,c)=>s+Number(c.totalAmount||0),0);
+  const totalCollected = DB.customers.reduce((s,c)=>s+Number(c.paidAmount||0),0);
+  const totalRemaining = DB.customers.reduce((s,c)=>s+remaining(c),0);
+  const paidCount = DB.customers.filter(c=>c.status==='paid').length;
+
+  document.getElementById('reportStats').innerHTML = `
+    <div class="stat-card"><div class="label">إجمالي المبيعات</div><div class="value small">${fmtMoney(totalSales)}</div></div>
+    <div class="stat-card"><div class="label">إجمالي المحصّل</div><div class="value small">${fmtMoney(totalCollected)}</div></div>
+    <div class="stat-card"><div class="label">المتبقي بالسوق</div><div class="value small">${fmtMoney(totalRemaining)}</div></div>
+    <div class="stat-card"><div class="label">عقود مسددة</div><div class="value">${paidCount}</div></div>
+  `;
+
+  const byMerchant = document.getElementById('reportByMerchant');
+  if(!DB.merchants.length){
+    byMerchant.innerHTML = `<div class="empty-state"><p>لا توجد بيانات تجار بعد</p></div>`;
+  } else {
+    byMerchant.innerHTML = DB.merchants.map(m=>{
+      const custs = DB.customers.filter(c=>c.merchantId===m.id);
+      const sales = custs.reduce((s,c)=>s+Number(c.totalAmount||0),0);
+      const collected = custs.reduce((s,c)=>s+Number(c.paidAmount||0),0);
+      const pct = sales>0? Math.round((collected/sales)*100):0;
+      return `
+        <div style="margin-bottom:14px;">
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
+            <b>${m.name}</b><span style="color:var(--text-dim)">${custs.length} عميل</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <div style="display:flex; justify-content:space-between; font-size:11.5px; color:var(--text-dim); margin-top:5px;">
+            <span>محصّل ${fmtMoney(collected)}</span><span>من ${fmtMoney(sales)}</span>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  renderMerchantCustomersReport();
+  renderCollectionByMonthReport();
+  renderDueThisMonthReport();
+  renderCollectedReport();
+
+  const activity = document.getElementById('reportActivity');
+  const allHistory = [];
+  DB.customers.forEach(c=>{
+    (c.history||[]).forEach(h=> allHistory.push({...h, custName:c.name}));
+  });
+  allHistory.sort((a,b)=> new Date(b.date) - new Date(a.date));
+  if(!allHistory.length){
+    activity.innerHTML = `<div class="empty-state"><p>لا توجد حركات مسجلة بعد</p></div>`;
+  } else {
+    activity.innerHTML = allHistory.slice(0,15).map(h=>`
+      <div class="seller-row" style="border-top:1px dashed var(--border);">
+        <span>${h.action} — ${h.custName}</span>
+        <span class="s-phone">${fmtDate(h.date)}</span>
+      </div>`).join('');
+  }
+}
+
+/* --- تقرير عملاء التاجر --- */
+function renderMerchantCustomersReport(){
+  const sel = document.getElementById('rep_merchant');
+  const prevValue = sel.value;
+  if(!DB.merchants.length){
+    sel.innerHTML = `<option value="">لا يوجد تجار بعد</option>`;
+  } else {
+    sel.innerHTML = `<option value="">اختر التاجر لعرض عملائه...</option>` +
+      DB.merchants.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
+    sel.value = prevValue || '';
+  }
+  const merchantId = sel.value;
+  const container = document.getElementById('merchantCustomersReport');
+  if(!merchantId){
+    container.innerHTML = `<div class="empty-state"><p>اختر تاجراً من القائمة أعلاه لعرض بيانات عملائه بالتفصيل</p></div>`;
+    return;
+  }
+  const custs = DB.customers.filter(c=>c.merchantId===merchantId).sort((a,b)=> new Date(a.dueDate)-new Date(b.dueDate));
+  if(!custs.length){
+    container.innerHTML = `<div class="empty-state"><p>لا يوجد عملاء لهذا التاجر بعد</p></div>`;
+    return;
+  }
+  container.innerHTML = custs.map(fullCustomerCardHTML).join('');
+}
+
+/* --- جدول تحصيل العملاء حسب الشهر لجميع التجار --- */
+function renderCollectionByMonthReport(){
+  const container = document.getElementById('collectionByMonthReport');
+  const active = DB.customers.filter(c=>c.status==='active');
+  if(!active.length){
+    container.innerHTML = `<div class="empty-state"><p>لا يوجد عملاء نشطون بعد</p></div>`;
+    return;
+  }
+  const groups = {};
+  active.forEach(c=>{
+    const key = (c.dueDate||'0000-00').slice(0,7);
+    if(!groups[key]) groups[key]=[];
+    groups[key].push(c);
+  });
+  const keys = Object.keys(groups).sort();
+  container.innerHTML = keys.map(key=>{
+    const [y,m] = key.split('-').map(Number);
+    const label = new Date(y, (m||1)-1, 1).toLocaleDateString('ar-SA-u-ca-gregory', {year:'numeric', month:'long'});
+    const rows = groups[key].slice().sort((a,b)=> new Date(a.dueDate)-new Date(b.dueDate)).map(c=>{
+      const urg = dueUrgency(c);
+      const mi = merchantInfo(c.merchantId);
+      return `
+        <div class="seller-row" style="border-top:1px dashed var(--border); flex-direction:column; align-items:stretch; gap:2px; padding:9px 0; cursor:pointer;" onclick="openCustomer('${c.id}')">
+          <div style="display:flex; justify-content:space-between;">
+            <b>${c.name}</b><span class="${urg.cls}" style="font-size:11.5px;">${urg.text}</span>
+          </div>
+          <div style="font-size:11.5px; color:var(--text-dim); display:flex; justify-content:space-between;">
+            <span>${c.phone||'—'}</span><span>${mi.merchantName}</span>
+          </div>
+        </div>`;
+    }).join('');
+    return `
+      <div style="margin-bottom:14px;">
+        <div style="font-size:12.5px; font-weight:700; color:var(--gold-light); margin-bottom:2px;">${label} · ${groups[key].length} عميل</div>
+        ${rows}
+      </div>`;
+  }).join('');
+}
+
+/* --- تقرير المبالغ المستحقة خلال الشهر الحالي --- */
+function renderDueThisMonthReport(){
+  const container = document.getElementById('dueThisMonthReport');
+  const totalEl = document.getElementById('dueMonthTotal');
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth();
+  const items = DB.customers.filter(c=>{
+    if(c.status!=='active') return false;
+    const d = new Date(c.dueDate+'T00:00:00');
+    return d.getFullYear()===y && d.getMonth()===m;
+  }).sort((a,b)=> new Date(a.dueDate)-new Date(b.dueDate));
+  const total = items.reduce((s,c)=>s+remaining(c),0);
+  totalEl.textContent = items.length ? fmtMoney(total) : '';
+  if(!items.length){
+    container.innerHTML = `<div class="empty-state"><p>لا توجد مبالغ مستحقة خلال هذا الشهر</p></div>`;
+    return;
+  }
+  container.innerHTML = items.map(c=>{
+    const mi = merchantInfo(c.merchantId);
+    return `
+      <div class="seller-row" style="border-top:1px dashed var(--border); flex-direction:column; align-items:stretch; gap:3px; padding:10px 0; cursor:pointer;" onclick="openCustomer('${c.id}')">
+        <div style="display:flex; justify-content:space-between; width:100%;">
+          <b>${c.name}</b><b style="color:var(--gold-light)">${fmtMoney(remaining(c))}</b>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim);">${mi.merchantName} · استحقاق ${fmtDate(c.dueDate)}</div>
+      </div>`;
+  }).join('');
+}
+
+/* --- تقرير المبالغ التي تم تحصيلها --- */
+function renderCollectedReport(){
+  const container = document.getElementById('collectedReport');
+  const totalEl = document.getElementById('collectedTotal');
+  const all = [];
+  DB.customers.forEach(c=>{
+    (c.payments||[]).forEach(p=> all.push({...p, custName:c.name}));
+  });
+  all.sort((a,b)=> new Date(b.date) - new Date(a.date));
+  const total = all.reduce((s,p)=>s+Number(p.amount||0),0);
+  totalEl.textContent = all.length ? fmtMoney(total) : '';
+  if(!all.length){
+    container.innerHTML = `<div class="empty-state"><p>لا توجد مبالغ محصّلة بعد</p></div>`;
+    return;
+  }
+  container.innerHTML = all.slice(0,30).map(p=>`
+    <div class="seller-row" style="border-top:1px dashed var(--border);">
+      <span>${p.custName}${p.note? ' — '+p.note : ''}</span>
+      <span class="s-phone">${fmtMoney(p.amount)} · ${fmtDate(p.date)}</span>
+    </div>`).join('');
+}
+
+/* ======================= CUSTOMER MODAL ======================= */
+let currentCustomerId = null;
+function openCustomer(id){
+  currentCustomerId = id;
+  const c = DB.customers.find(x=>x.id===id);
+  if(!c) return;
+  const mi = merchantInfo(c.merchantId);
+  const st = statusLabel(c);
+  const urg = dueUrgency(c);
+  document.getElementById('mcTitle').textContent = c.name;
+
+  document.getElementById('mcBody').innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <span class="${urg.cls}" style="font-size:13px;">${urg.text}</span>
+      <span class="status-pill ${st.cls}">${st.t}</span>
+    </div>
+    <div class="kv-grid">
+      <div class="kv"><div class="k">اسم العميل</div><div class="v">${c.name}</div></div>
+      <div class="kv"><div class="k">جوال العميل</div><div class="v">${c.phone||'—'}</div></div>
+      <div class="kv"><div class="k">اسم الكفيل</div><div class="v">${c.guarantorName||'—'}</div></div>
+      <div class="kv"><div class="k">جوال الكفيل</div><div class="v">${c.guarantorPhone||'—'}</div></div>
+      <div class="kv"><div class="k">التاجر</div><div class="v">${mi.merchantName}</div></div>
+      <div class="kv"><div class="k">جوال التاجر</div><div class="v">${mi.merchantPhone}</div></div>
+      <div class="kv"><div class="k">مبلغ الشراء</div><div class="v">${c.purchaseAmount? fmtMoney(c.purchaseAmount):'—'}</div></div>
+      <div class="kv"><div class="k">مدة الشراء</div><div class="v">${c.purchaseDuration? c.purchaseDuration+' شهر':'—'}</div></div>
+      <div class="kv"><div class="k">تاريخ البيع</div><div class="v">${fmtDate(c.saleDate)}</div></div>
+      <div class="kv"><div class="k">تاريخ الاستحصال</div><div class="v ${urg.cls}">${fmtDate(c.dueDate)}</div></div>
+      <div class="kv" style="grid-column:1 / -1;"><div class="k">السند الإلكتروني</div><div class="v">${c.eReceipt||'—'}</div></div>
+    </div>
+    <div class="panel" style="padding:14px; margin-bottom:14px;">
+      <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px;">
+        <span style="color:var(--text-dim)">المبلغ الإجمالي</span><b>${fmtMoney(c.totalAmount)}</b>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px;">
+        <span style="color:var(--text-dim)">المسدد</span><b style="color:#7fb26e">${fmtMoney(c.paidAmount||0)}</b>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:13px;">
+        <span style="color:var(--text-dim)">المتبقي</span><b style="color:var(--gold-light)">${fmtMoney(remaining(c))}</b>
+      </div>
+      <div class="progress-bar" style="margin-top:10px;"><div class="progress-fill" style="width:${c.totalAmount>0?Math.min(100,Math.round((c.paidAmount||0)/c.totalAmount*100)):0}%"></div></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-gold" onclick="openPay()">سداد</button>
+      <button class="btn btn-outline" onclick="openSettle()">تسوية</button>
+      <button class="btn btn-outline" onclick="openReschedule()">جدولة</button>
+    </div>
+    <div style="height:8px;"></div>
+    <div class="btn-row" style="grid-template-columns:1fr 1fr;">
+      <button class="btn btn-outline" onclick="openEdit()">✎ تعديل البيانات</button>
+      <a class="btn btn-outline" style="text-decoration:none; color:#4fce5d; border-color:rgba(79,206,93,0.3);"
+         href="${waLink(c.phone, 'مرحباً '+c.name+'، تذكير بموعد استحصال المبلغ المتبقي '+fmtMoney(remaining(c))+' بتاريخ '+fmtDate(c.dueDate)+'.')}"
+         target="_blank" rel="noopener">واتساب</a>
+    </div>
+  `;
+  openModal('modalCustomer');
+}
+
+/* ======================= EDIT ======================= */
+function openEdit(){
+  const c = DB.customers.find(x=>x.id===currentCustomerId);
+  document.getElementById('editBody').innerHTML = `
+    <div class="field"><label>اسم العميل</label><input id="e_name" value="${c.name}"></div>
+    <div class="field"><label>جوال العميل</label><input id="e_phone" value="${c.phone||''}"></div>
+    <div class="field-row">
+      <div class="field"><label>اسم الكفيل</label><input id="e_guarName" value="${c.guarantorName||''}"></div>
+      <div class="field"><label>جوال الكفيل</label><input id="e_guarPhone" value="${c.guarantorPhone||''}"></div>
+    </div>
+    <div class="field"><label>التاجر</label>
+      <select id="e_merchant">${DB.merchants.map(m=>`<option value="${m.id}" ${m.id===c.merchantId?'selected':''}>${m.name}</option>`).join('')}</select>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>تاريخ البيع</label><input id="e_saleDate" type="date" value="${c.saleDate}"></div>
+      <div class="field"><label>تاريخ الاستحصال</label><input id="e_dueDate" type="date" value="${c.dueDate}"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>مبلغ الشراء</label><input id="e_purchaseAmount" type="number" value="${c.purchaseAmount||0}"></div>
+      <div class="field"><label>مدة الشراء (بالأشهر)</label><input id="e_purchaseDuration" type="number" value="${c.purchaseDuration||0}"></div>
+    </div>
+    <div class="field"><label>المبلغ الإجمالي</label><input id="e_amount" type="number" value="${c.totalAmount}"></div>
+    <div class="field"><label>السند الإلكتروني (رقم أو اسم)</label><input id="e_eReceipt" value="${c.eReceipt||''}"></div>
+    <button class="btn btn-gold" onclick="saveEdit()">حفظ التعديلات</button>
+    <div style="height:8px;"></div>
+    <button class="btn btn-danger" onclick="deleteCustomer()">حذف بطاقة العميل</button>
+  `;
+  openModal('modalEdit');
+}
+async function saveEdit(){
+  const c = DB.customers.find(x=>x.id===currentCustomerId);
+  c.name = document.getElementById('e_name').value.trim();
+  c.phone = document.getElementById('e_phone').value.trim();
+  c.guarantorName = document.getElementById('e_guarName').value.trim();
+  c.guarantorPhone = document.getElementById('e_guarPhone').value.trim();
+  c.merchantId = document.getElementById('e_merchant').value;
+  c.saleDate = document.getElementById('e_saleDate').value;
+  c.dueDate = document.getElementById('e_dueDate').value;
+  c.purchaseAmount = parseFloat(document.getElementById('e_purchaseAmount').value) || 0;
+  c.purchaseDuration = parseInt(document.getElementById('e_purchaseDuration').value) || 0;
+  c.totalAmount = parseFloat(document.getElementById('e_amount').value) || c.totalAmount;
+  c.eReceipt = document.getElementById('e_eReceipt').value.trim();
+  c.history.push({date: todayISO(), action:'تعديل بيانات البطاقة'});
+  await saveDB();
+  closeModal('modalEdit');
+  openCustomer(c.id);
+  renderAll();
+  toast('تم حفظ التعديلات');
+}
+async function deleteCustomer(){
+  if(!confirm('هل أنت متأكد من حذف بطاقة هذا العميل؟')) return;
+  DB.customers = DB.customers.filter(x=>x.id!==currentCustomerId);
+  await saveDB();
+  closeModal('modalEdit'); closeModal('modalCustomer');
+  renderAll();
+  toast('تم حذف بطاقة العميل');
+}
+
+/* ======================= PAYMENT ======================= */
+function openPay(){
+  const c = DB.customers.find(x=>x.id===currentCustomerId);
+  document.getElementById('payBody').innerHTML = `
+    <div class="kv-grid" style="grid-template-columns:1fr;">
+      <div class="kv"><div class="k">المتبقي حالياً</div><div class="v" style="font-size:17px; color:var(--gold-light)">${fmtMoney(remaining(c))}</div></div>
+    </div>
+    <div class="field"><label>المبلغ المسدد الآن</label><input id="p_amount" type="number" placeholder="0.00" inputmode="decimal"></div>
+    <div class="field"><label>ملاحظة (اختياري)</label><input id="p_note" placeholder="مثال: دفعة نقدية"></div>
+    <button class="btn btn-gold" onclick="submitPayment()">تأكيد السداد</button>
+  `;
+  openModal('modalPay');
+}
+async function submitPayment(){
+  const c = DB.customers.find(x=>x.id===currentCustomerId);
+  const amt = parseFloat(document.getElementById('p_amount').value);
+  const note = document.getElementById('p_note').value.trim();
+  if(!amt || amt<=0){ toast('الرجاء إدخال مبلغ صحيح'); return; }
+  c.paidAmount = Number(c.paidAmount||0) + amt;
+  c.payments.push({date: todayISO(), amount: amt, note});
+  c.history.push({date: todayISO(), action:'سداد دفعة', note: fmtMoney(amt)});
+  const fullyPaid = c.paidAmount >= c.totalAmount;
+  if(fullyPaid){ c.status = 'paid'; c.history.push({date: todayISO(), action:'اكتمال السداد'}); }
+  await saveDB();
+  closeModal('modalPay');
+  renderAll();
+  if(fullyPaid){
+    openReceipt(c, amt);
+  } else {
+    openCustomer(c.id);
+    toast('تم تسجيل الدفعة بنجاح');
+  }
+}
+
+/* ======================= SETTLEMENT ======================= */
+function openSettle(){
+  const c = DB.customers.find(x=>x.id===currentCustomerId);
+  document.getElementById('settleBody').innerHTML = `
+    <div class="kv-grid" style="grid-template-columns:1fr;">
+      <div class="kv"><div class="k">المتبقي قبل التسوية</div><div class="v" style="font-size:17px; color:var(--gold-light)">${fmtMoney(remaining(c))}</div></div>
+    </div>
+    <div class="field"><label>المبلغ النهائي المتفق عليه للتسوية</label><input id="s_amount" type="number" placeholder="0.00" inputmode="decimal"></div>
+    <div class="field"><label>سبب / تفاصيل التسوية</label><textarea id="s_note" rows="3" placeholder="مثال: تسوية بموافقة الطرفين بخصم..."></textarea></div>
+    <button class="btn btn-gold" onclick="submitSettle()">تأكيد التسوية</button>
+  `;
+  openModal('modalSettle');
+}
+async function submitSettle(){
+  const c = DB.customers.find(x=>x.id===currentCustomerId);
+  const amt = parseFloat(document.getElementById('s_amount').value);
+  const note = document.getElementById('s_note').value.trim();
+  if(amt===undefined || isNaN(amt) || amt<0){ toast('الرجاء إدخال مبلغ التسوية'); return; }
+  const paidSoFar = Number(c.paidAmount||0);
+  c.totalAmount = paidSoFar + amt;
+  c.status = 'settled';
+  c.history.push({date: todayISO(), action:'تسوية الحساب', note: note || ('مبلغ متبقي بعد التسوية: '+fmtMoney(amt))});
+  await saveDB();
+  closeModal('modalSettle');
+  openCustomer(c.id);
+  renderAll();
+  toast('تمت تسوية الحساب');
+}
+
+/* ======================= RESCHEDULE ======================= */
+function openReschedule(){
+  const c = DB.customers.find(x=>x.id===currentCustomerId);
+  document.getElementById('reschedBody').innerHTML = `
+    <div class="kv-grid" style="grid-template-columns:1fr;">
+      <div class="kv"><div class="k">تاريخ الاستحصال الحالي</div><div class="v">${fmtDate(c.dueDate)}</div></div>
+    </div>
+    <div class="field"><label>التاريخ الجديد للاستحصال</label><input id="r_date" type="date" value="${c.dueDate}"></div>
+    <div class="field"><label>سبب إعادة الجدولة</label><textarea id="r_note" rows="3" placeholder="مثال: طلب العميل تأجيل شهر إضافي"></textarea></div>
+    <button class="btn btn-gold" onclick="submitReschedule()">تأكيد الجدولة الجديدة</button>
+  `;
+  openModal('modalReschedule');
+}
+async function submitReschedule(){
+  const c = DB.customers.find(x=>x.id===currentCustomerId);
+  const newDate = document.getElementById('r_date').value;
+  const note = document.getElementById('r_note').value.trim();
+  if(!newDate){ toast('الرجاء اختيار تاريخ جديد'); return; }
+  const oldDate = c.dueDate;
+  c.dueDate = newDate;
+  c.history.push({date: todayISO(), action:'إعادة جدولة', note: `من ${fmtDate(oldDate)} إلى ${fmtDate(newDate)}${note? ' — '+note:''}`});
+  await saveDB();
+  closeModal('modalReschedule');
+  openCustomer(c.id);
+  renderAll();
+  toast('تم تحديث تاريخ الاستحصال');
+}
+
+/* ======================= RECEIPT ======================= */
+function openReceipt(c, lastAmount){
+  const mi = merchantInfo(c.merchantId);
+  const msg = `سند تسديد - ركن سما\nالعميل: ${c.name}\nالمبلغ الإجمالي: ${fmtMoney(c.totalAmount)}\nتم السداد بالكامل بتاريخ ${fmtDate(todayISO())}\nشاكرين لكم حسن التعامل.`;
+  document.getElementById('receiptBody').innerHTML = `
+    <div class="receipt">
+      <div class="r-check">✓</div>
+      <div style="color:var(--gold-light); font-size:12px; font-weight:700; letter-spacing:.3px; margin-bottom:6px;">ركن سما</div>
+      <h3>تم السداد بالكامل</h3>
+      <div style="color:var(--text-dim); font-size:12.5px;">${c.name}</div>
+      <div class="r-amount">${fmtMoney(c.totalAmount)}</div>
+      <div class="r-line"><span>تاريخ السند</span><b>${fmtDate(todayISO())}</b></div>
+      <div class="r-line"><span>التاجر</span><b>${mi.merchantName}</b></div>
+      ${c.eReceipt? `<div class="r-line"><span>السند الإلكتروني</span><b>${c.eReceipt}</b></div>` : ''}
+      <div class="r-line"><span>رقم البطاقة</span><b>${c.id.slice(-6)}</b></div>
+    </div>
+    <div style="height:14px;"></div>
+    <a class="btn btn-gold" style="text-decoration:none;" href="${waLink(c.phone, msg)}" target="_blank" rel="noopener">إرسال السند إلى جوال العميل عبر واتساب</a>
+    <div style="height:8px;"></div>
+    <button class="btn btn-outline" onclick="closeModal('modalReceipt')">إغلاق</button>
+  `;
+  openModal('modalReceipt');
+}
+
+/* ======================= MODAL HELPERS ======================= */
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-backdrop').forEach(m=>{
+  m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('open'); });
+});
+
+/* ======================= INIT ======================= */
+loadDB();
+</script>
+</body>
+</html>
