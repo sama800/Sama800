@@ -184,10 +184,6 @@
   }
   .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--gold-dim);}
   .field-row{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
-  .hint-box{
-    background:rgba(201,162,39,0.08); border:1px dashed var(--gold-dim); border-radius:10px;
-    padding:10px 12px; font-size:12.5px; color:var(--gold-light); margin-bottom:14px; display:none;
-  }
 
   .btn{
     display:flex; align-items:center; justify-content:center; gap:6px;
@@ -198,8 +194,6 @@
   .btn-outline{background:transparent; border-color:var(--border); color:var(--text);}
   .btn-danger{background:var(--danger-bg); color:#e08278; border-color:rgba(181,69,59,0.4);}
   .btn-row{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:6px;}
-  .btn-row .btn{padding:11px 6px; font-size:12px;}
-  .btn-sm{padding:8px 12px; font-size:12.5px; width:auto;}
 
   /* Merchant tab */
   .merchant-card{background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin-bottom:10px;}
@@ -249,11 +243,6 @@
     position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--gold-light); color:#181500;
     padding:11px 20px; border-radius:99px; font-size:13px; font-weight:700; z-index:99; display:none; box-shadow:0 6px 20px rgba(0,0,0,.4);
   }
-  .fab-add{
-    position:fixed; bottom:20px; left:50%; transform:translateX(calc(-50% + 220px)); z-index:5;
-  }
-  @media (max-width:520px){ .fab-add{display:none;} }
-
   ::-webkit-scrollbar{width:6px;} ::-webkit-scrollbar-thumb{background:var(--border); border-radius:99px;}
 </style>
 </head>
@@ -262,9 +251,7 @@
 
   <header class="topbar">
     <div class="brand">
-      <div class="brand-mark">
-        <span class="brand-word">سما</span>
-      </div>
+      <div class="brand-mark"><span class="brand-word">سما</span></div>
       <div>
         <h1>ركن سما</h1>
         <span>إدارة المبيعات الآجلة</span>
@@ -285,7 +272,7 @@
   </nav>
 
   <main>
-    <!-- ================= HOME ================= -->
+    <!-- HOME -->
     <div class="view active" id="view-home">
       <div class="stat-grid" id="homeStats"></div>
       <div class="panel">
@@ -297,7 +284,7 @@
       </div>
     </div>
 
-    <!-- ================= CUSTOMERS ================= -->
+    <!-- CUSTOMERS -->
     <div class="view" id="view-customers">
       <div class="search-box">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
@@ -306,118 +293,69 @@
       <div id="customersList"></div>
     </div>
 
-    <!-- ================= ADD CUSTOMER ================= -->
+    <!-- ADD CUSTOMER -->
     <div class="view" id="view-addcustomer">
       <div class="panel">
         <div class="panel-title">بيانات العميل الجديد</div>
-        <div class="field">
-          <label>اسم العميل</label>
-          <input id="f_custName" placeholder="مثال: محمد عبدالله">
+        <div class="field"><label>اسم العميل</label><input id="f_custName" placeholder="مثال: محمد عبدالله"></div>
+        <div class="field"><label>جوال العميل</label><input id="f_custPhone" placeholder="05xxxxxxxx" type="tel"></div>
+        <div class="field-row">
+          <div class="field"><label>اسم الكفيل</label><input id="f_guarName" placeholder="اسم الكفيل"></div>
+          <div class="field"><label>جوال الكفيل</label><input id="f_guarPhone" placeholder="05xxxxxxxx" type="tel"></div>
         </div>
-        <div class="field">
-          <label>جوال العميل</label>
-          <input id="f_custPhone" placeholder="05xxxxxxxx" type="tel">
+        <div class="field"><label>التاجر</label><select id="f_merchant"></select></div>
+        <div class="field-row">
+          <div class="field"><label>تاريخ البيع</label><input id="f_saleDate" type="date"></div>
+          <div class="field"><label>تاريخ الاستحصال</label><input id="f_dueDate" type="date"></div>
         </div>
         <div class="field-row">
-          <div class="field">
-            <label>اسم الكفيل</label>
-            <input id="f_guarName" placeholder="اسم الكفيل">
-          </div>
-          <div class="field">
-            <label>جوال الكفيل</label>
-            <input id="f_guarPhone" placeholder="05xxxxxxxx" type="tel">
-          </div>
+          <div class="field"><label>مبلغ الشراء (ريال)</label><input id="f_purchaseAmount" placeholder="0.00" type="number" inputmode="decimal"></div>
+          <div class="field"><label>مدة الشراء (بالأشهر)</label><input id="f_purchaseDuration" placeholder="مثال: 12" type="number" inputmode="numeric"></div>
         </div>
-        <div class="field">
-          <label>التاجر</label>
-          <select id="f_merchant"></select>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label>تاريخ البيع</label>
-            <input id="f_saleDate" type="date">
-          </div>
-          <div class="field">
-            <label>تاريخ الاستحصال</label>
-            <input id="f_dueDate" type="date">
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label>مبلغ الشراء (ريال)</label>
-            <input id="f_purchaseAmount" placeholder="0.00" type="number" inputmode="decimal">
-          </div>
-          <div class="field">
-            <label>مدة الشراء (بالأشهر)</label>
-            <input id="f_purchaseDuration" placeholder="مثال: 12" type="number" inputmode="numeric">
-          </div>
-        </div>
-        <div class="field">
-          <label>المبلغ الإجمالي (ريال)</label>
-          <input id="f_amount" placeholder="0.00" type="number" inputmode="decimal">
-        </div>
-        <div class="field">
-          <label>السند الإلكتروني (رقم أو اسم)</label>
-          <input id="f_eReceipt" placeholder="مثال: INV-1024 أو اسم السند">
-        </div>
+        <div class="field"><label>المبلغ الإجمالي (ريال)</label><input id="f_amount" placeholder="0.00" type="number" inputmode="decimal"></div>
+        <div class="field"><label>السند الإلكتروني (رقم أو اسم)</label><input id="f_eReceipt" placeholder="مثال: INV-1024"></div>
         <button class="btn btn-gold" onclick="saveNewCustomer()">حفظ بطاقة العميل</button>
       </div>
     </div>
 
-    <!-- ================= MERCHANT ================= -->
+    <!-- MERCHANT -->
     <div class="view" id="view-merchant">
       <div class="panel">
-        <div class="panel-title">
-          <span>إضافة تاجر</span>
-        </div>
+        <div class="panel-title"><span>إضافة تاجر</span></div>
         <div class="field-row">
           <div class="field"><label>اسم التاجر</label><input id="f_merchName" placeholder="اسم التاجر"></div>
           <div class="field"><label>جوال التاجر</label><input id="f_merchPhone" placeholder="05xxxxxxxx" type="tel"></div>
         </div>
         <button class="btn btn-outline" onclick="addMerchant()">+ إضافة تاجر</button>
       </div>
-
       <div class="section-label">التجار</div>
       <div id="merchantList"></div>
     </div>
 
-    <!-- ================= REPORTS ================= -->
+    <!-- REPORTS -->
     <div class="view" id="view-reports">
       <div class="stat-grid" id="reportStats"></div>
       <div class="panel">
         <div class="panel-title">التحصيل حسب التاجر</div>
         <div id="reportByMerchant"></div>
       </div>
-
       <div class="panel">
         <div class="panel-title">تقرير عملاء التاجر</div>
-        <div class="field" style="margin-bottom:12px;">
-          <select id="rep_merchant" onchange="renderMerchantCustomersReport()"></select>
-        </div>
+        <div class="field" style="margin-bottom:12px;"><select id="rep_merchant" onchange="renderMerchantCustomersReport()"></select></div>
         <div id="merchantCustomersReport"></div>
       </div>
-
       <div class="panel">
-        <div class="panel-title">جدول تحصيل العملاء حسب الشهر (جميع التجار)</div>
+        <div class="panel-title">جدول تحصيل العملاء حسب الشهر</div>
         <div id="collectionByMonthReport"></div>
       </div>
-
       <div class="panel">
-        <div class="panel-title">
-          <span>المبالغ المستحقة هذا الشهر</span>
-          <span id="dueMonthTotal" style="font-size:12.5px; color:var(--gold-light); font-weight:700;"></span>
-        </div>
+        <div class="panel-title"><span>المبالغ المستحقة هذا الشهر</span><span id="dueMonthTotal" style="font-size:12.5px; color:var(--gold-light); font-weight:700;"></span></div>
         <div id="dueThisMonthReport"></div>
       </div>
-
       <div class="panel">
-        <div class="panel-title">
-          <span>المبالغ المحصّلة</span>
-          <span id="collectedTotal" style="font-size:12.5px; color:var(--gold-light); font-weight:700;"></span>
-        </div>
+        <div class="panel-title"><span>المبالغ المحصّلة</span><span id="collectedTotal" style="font-size:12.5px; color:var(--gold-light); font-weight:700;"></span></div>
         <div id="collectedReport"></div>
       </div>
-
       <div class="panel">
         <div class="panel-title">آخر الحركات</div>
         <div id="reportActivity"></div>
@@ -426,19 +364,15 @@
   </main>
 </div>
 
-<!-- Customer detail modal -->
+<!-- Modals -->
 <div class="modal-backdrop" id="modalCustomer">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-head">
-      <h2 id="mcTitle">بطاقة العميل</h2>
-      <button class="modal-close" onclick="closeModal('modalCustomer')">✕</button>
-    </div>
+    <div class="modal-head"><h2 id="mcTitle">بطاقة العميل</h2><button class="modal-close" onclick="closeModal('modalCustomer')">✕</button></div>
     <div id="mcBody"></div>
   </div>
 </div>
 
-<!-- Edit customer modal -->
 <div class="modal-backdrop" id="modalEdit">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
@@ -447,7 +381,6 @@
   </div>
 </div>
 
-<!-- Payment modal -->
 <div class="modal-backdrop" id="modalPay">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
@@ -456,7 +389,6 @@
   </div>
 </div>
 
-<!-- Settlement modal -->
 <div class="modal-backdrop" id="modalSettle">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
@@ -465,7 +397,6 @@
   </div>
 </div>
 
-<!-- Reschedule modal -->
 <div class="modal-backdrop" id="modalReschedule">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
@@ -474,7 +405,6 @@
   </div>
 </div>
 
-<!-- Receipt modal -->
 <div class="modal-backdrop" id="modalReceipt">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
@@ -486,9 +416,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* ======================= STATE & STORAGE ======================= */
 let DB = { merchants: [], customers: [] };
-const STORAGE_KEY = 'sama_ledger_data_v1';
+const STORAGE_KEY = 'sama_ledger_data_v2';
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
@@ -496,33 +425,36 @@ function loadDB(){
   try{
     const saved = localStorage.getItem(STORAGE_KEY);
     if(saved){ DB = JSON.parse(saved); }
-  }catch(e){ console.error('load error', e); }
+  }catch(e){ console.error('Load error', e); }
   renderAll();
 }
 
 function saveDB(){
   try{
     localStorage.setItem(STORAGE_KEY, JSON.stringify(DB));
-  }catch(e){ console.error('storage error', e); }
+  }catch(e){ console.error('Save error', e); toast('تنبيه: تعذر حفظ البيانات محلياً'); }
 }
 
-/* ======================= UTIL ======================= */
 function fmtMoney(n){
   n = Number(n)||0;
   return n.toLocaleString('ar-SA', {maximumFractionDigits:0}) + ' ر.س';
 }
+
 function fmtDate(d){
   if(!d) return '—';
   const dt = new Date(d+'T00:00:00');
   if(isNaN(dt)) return d;
   return dt.toLocaleDateString('ar-SA-u-ca-gregory', {year:'numeric', month:'long', day:'numeric'});
 }
+
 function todayISO(){ return new Date().toISOString().slice(0,10); }
+
 function daysBetween(dateISO){
   const a = new Date(todayISO()+'T00:00:00');
   const b = new Date(dateISO+'T00:00:00');
   return Math.round((b-a)/(1000*60*60*24));
 }
+
 function waPhone(phone){
   let p = (phone||'').replace(/[^0-9]/g,'');
   if(p.startsWith('00')) p = p.slice(2);
@@ -530,27 +462,34 @@ function waPhone(phone){
   if(!p.startsWith('966') && p.length===9) p = '966'+p;
   return p;
 }
+
 function waLink(phone, text){
   return 'https://wa.me/'+waPhone(phone)+'?text='+encodeURIComponent(text);
 }
+
 function toast(msg){
   const t = document.getElementById('toast');
   t.textContent = msg; t.style.display='block';
   clearTimeout(window._toastTimer);
   window._toastTimer = setTimeout(()=>{ t.style.display='none'; }, 2200);
 }
+
 function getMerchant(id){ return DB.merchants.find(m=>m.id===id); }
+
 function merchantInfo(merchantId){
   const m = getMerchant(merchantId);
   if(!m) return {merchantName:'—', merchantPhone:'—'};
   return {merchantName:m.name, merchantPhone:m.phone||'—'};
 }
+
 function remaining(c){ return Math.max(0, Number(c.totalAmount) - Number(c.paidAmount||0)); }
+
 function statusLabel(c){
   if(c.status==='paid') return {t:'مسدد بالكامل', cls:'paid'};
   if(c.status==='settled') return {t:'تمت التسوية', cls:'settled'};
   return {t:'نشط', cls:'active'};
 }
+
 function dueUrgency(c){
   if(c.status!=='active') return {cls:'due-ok', text: c.status==='paid'?'مسدد بالكامل':'تمت التسوية'};
   const days = daysBetween(c.dueDate);
@@ -560,16 +499,11 @@ function dueUrgency(c){
   return {cls:'due-ok', text:`متبقي ${days} يوم`};
 }
 
-/* ======================= TABS ======================= */
 function switchTab(tab){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+tab).classList.add('active');
-  if(tab==='home') renderHome();
-  if(tab==='customers') renderCustomersTab();
-  if(tab==='addcustomer') renderAddCustomerTab();
-  if(tab==='merchant') renderMerchantTab();
-  if(tab==='reports') renderReportsTab();
+  renderAll();
 }
 
 function renderAll(){
@@ -578,15 +512,6 @@ function renderAll(){
   renderAddCustomerTab();
   renderMerchantTab();
   renderReportsTab();
-}
-
-/* ======================= HOME ======================= */
-function getAlerts(){
-  return DB.customers
-    .filter(c=>c.status==='active')
-    .map(c=>({c, days: daysBetween(c.dueDate)}))
-    .filter(x=>x.days<=30)
-    .sort((a,b)=>a.days-b.days);
 }
 
 function renderHome(){
@@ -602,7 +527,12 @@ function renderHome(){
     <div class="stat-card"><div class="label">المتبقي</div><div class="value small">${fmtMoney(totalRemaining)}</div></div>
   `;
 
-  const alerts = getAlerts();
+  const alerts = DB.customers
+    .filter(c=>c.status==='active')
+    .map(c=>({c, days: daysBetween(c.dueDate)}))
+    .filter(x=>x.days<=30)
+    .sort((a,b)=>a.days-b.days);
+
   document.getElementById('bellDot').style.display = alerts.length? 'block':'none';
   document.getElementById('alertCount').textContent = alerts.length ? (alerts.length+' عميل') : '';
 
@@ -614,7 +544,7 @@ function renderHome(){
   list.innerHTML = alerts.map(({c,days})=>{
     const overdue = days<0;
     const urg = dueUrgency(c);
-    const msg = `مرحباً ${c.name}، تذكير بأن تاريخ استحصال المبلغ المتبقي (${fmtMoney(remaining(c))}) بتاريخ ${fmtDate(c.dueDate)}. نأمل الاستعداد للسداد. شاكرين تعاونكم.`;
+    const msg = `مرحباً ${c.name}، تذكير بأن تاريخ استحصال المبلغ المتبقي (${fmtMoney(remaining(c))}) بتاريخ ${fmtDate(c.dueDate)}. نأمل الاستعداد للسداد.`;
     return `
       <div class="alert-item ${overdue?'overdue':''}">
         <div class="a-icon">${overdue?'!':'⏰'}</div>
@@ -622,14 +552,13 @@ function renderHome(){
           <div class="a-name">${c.name}</div>
           <div class="a-sub"><span class="${urg.cls}">${urg.text}</span> · ${fmtMoney(remaining(c))}</div>
         </div>
-        <a class="wa-btn" href="${waLink(c.phone, msg)}" target="_blank" rel="noopener" title="إرسال تذكير واتساب">
+        <a class="wa-btn" href="${waLink(c.phone, msg)}" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24"><path d="M17.6 6.3A8.6 8.6 0 0 0 3.8 16.9L3 21l4.2-.8a8.6 8.6 0 0 0 12.4-7.7 8.6 8.6 0 0 0-2-6.2zM12 19.4a7.3 7.3 0 0 1-3.7-1l-.3-.2-2.5.5.5-2.4-.2-.3A7.4 7.4 0 1 1 12 19.4zm4-5.5c-.2-.1-1.3-.6-1.5-.7-.2-.1-.3-.1-.5.1-.1.2-.5.7-.7.8-.1.2-.3.2-.5.1a6 6 0 0 1-1.8-1.1 6.6 6.6 0 0 1-1.2-1.5c-.1-.2 0-.3.1-.5l.4-.4.2-.4v-.4c-.1-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-.9 2.2c0 1.3 1 2.6 1.1 2.7.1.2 2 3 4.7 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.3-.6 1.5-1.1.2-.5.2-1 .1-1.1-.1-.1-.2-.2-.4-.3z"/></svg>
         </a>
       </div>`;
   }).join('');
 }
 
-/* ======================= CUSTOMERS TAB ======================= */
 function fullCustomerCardHTML(c){
   const mi = merchantInfo(c.merchantId);
   const st = statusLabel(c);
@@ -654,7 +583,6 @@ function fullCustomerCardHTML(c){
         <div class="kv"><div class="k">مدة الشراء</div><div class="v">${c.purchaseDuration? c.purchaseDuration+' شهر':'—'}</div></div>
         <div class="kv"><div class="k">المبلغ الإجمالي</div><div class="v">${fmtMoney(c.totalAmount)}</div></div>
         <div class="kv"><div class="k">المتبقي</div><div class="v">${fmtMoney(remaining(c))}</div></div>
-        <div class="kv" style="grid-column:1 / -1;"><div class="k">الحالة الزمنية</div><div class="v ${urg.cls}">${urg.text}</div></div>
       </div>
     </div>`;
 }
@@ -663,11 +591,9 @@ function renderCustomersTab(){
   const q = (document.getElementById('custSearch').value||'').trim();
   const list = document.getElementById('customersList');
   let items = DB.customers.slice().sort((a,b)=> new Date(a.dueDate) - new Date(b.dueDate));
-  if(q){
-    items = items.filter(c => c.name.includes(q) || (c.phone||'').includes(q));
-  }
+  if(q){ items = items.filter(c => c.name.includes(q) || (c.phone||'').includes(q)); }
   if(!items.length){
-    list.innerHTML = `<div class="empty-state"><div class="e-icon">📇</div><p>لا يوجد عملاء بعد.<br>اضغط "إضافة عميل جديد" للبدء</p></div>`;
+    list.innerHTML = `<div class="empty-state"><div class="e-icon">📇</div><p>لا يوجد عملاء بعد</p></div>`;
     return;
   }
   list.innerHTML = items.map(c=>{
@@ -695,18 +621,16 @@ function renderCustomersTab(){
   }).join('');
 }
 
-/* ======================= ADD CUSTOMER TAB ======================= */
 function renderAddCustomerTab(){
   const sel = document.getElementById('f_merchant');
   if(!DB.merchants.length){
-    sel.innerHTML = `<option value="">لا يوجد تجار بعد — أضف تاجراً أولاً من تبويب التاجر</option>`;
+    sel.innerHTML = `<option value="">لا يوجد تجار — أضف تاجراً أولاً</option>`;
   } else {
-    sel.innerHTML = `<option value="">اختر التاجر...</option>` + DB.merchants.map(m=>{
-      return `<option value="${m.id}">${m.name}</option>`;
-    }).join('');
+    sel.innerHTML = `<option value="">اختر التاجر...</option>` + DB.merchants.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
   }
-  document.getElementById('f_saleDate').value = todayISO();
+  if(!document.getElementById('f_saleDate').value) document.getElementById('f_saleDate').value = todayISO();
 }
+
 function saveNewCustomer(){
   const name = document.getElementById('f_custName').value.trim();
   const phone = document.getElementById('f_custPhone').value.trim();
@@ -722,26 +646,24 @@ function saveNewCustomer(){
 
   if(!name || !phone){ toast('الرجاء إدخال اسم العميل وجواله'); return; }
   if(!merchantId){ toast('الرجاء اختيار التاجر'); return; }
-  if(!saleDate || !dueDate){ toast('الرجاء إدخال تاريخ البيع وتاريخ الاستحصال'); return; }
+  if(!saleDate || !dueDate){ toast('الرجاء إدخال التواريخ'); return; }
   if(!amount || amount<=0){ toast('الرجاء إدخال مبلغ صحيح'); return; }
 
   const c = {
     id: uid(), name, phone, guarantorName: guarName, guarantorPhone: guarPhone,
-    merchantId, saleDate, dueDate, originalDueDate: dueDate,
-    purchaseAmount, purchaseDuration, eReceipt,
+    merchantId, saleDate, dueDate, purchaseAmount, purchaseDuration, eReceipt,
     totalAmount: amount, paidAmount: 0, status:'active',
     payments: [], history: [{date: todayISO(), action:'إنشاء البطاقة', note:`مبلغ إجمالي ${fmtMoney(amount)}`}]
   };
   DB.customers.push(c);
   saveDB();
-  toast('تم حفظ بطاقة العميل بنجاح');
+  toast('تم حفظ العميل بنجاح');
   ['f_custName','f_custPhone','f_guarName','f_guarPhone','f_purchaseAmount','f_purchaseDuration','f_amount','f_dueDate','f_eReceipt'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f_merchant').value='';
   renderAll();
   switchTab('customers');
 }
 
-/* ======================= MERCHANT TAB ======================= */
 function renderMerchantTab(){
   const list = document.getElementById('merchantList');
   if(!DB.merchants.length){
@@ -759,6 +681,7 @@ function renderMerchantTab(){
       </div>`;
   }).join('');
 }
+
 function addMerchant(){
   const name = document.getElementById('f_merchName').value.trim();
   const phone = document.getElementById('f_merchPhone').value.trim();
@@ -771,7 +694,6 @@ function addMerchant(){
   renderMerchantTab(); renderAddCustomerTab();
 }
 
-/* ======================= REPORTS TAB ======================= */
 function renderReportsTab(){
   const totalSales = DB.customers.reduce((s,c)=>s+Number(c.totalAmount||0),0);
   const totalCollected = DB.customers.reduce((s,c)=>s+Number(c.paidAmount||0),0);
@@ -787,7 +709,7 @@ function renderReportsTab(){
 
   const byMerchant = document.getElementById('reportByMerchant');
   if(!DB.merchants.length){
-    byMerchant.innerHTML = `<div class="empty-state"><p>لا توجد بيانات تجار بعد</p></div>`;
+    byMerchant.innerHTML = `<div class="empty-state"><p>لا توجد بيانات تجار</p></div>`;
   } else {
     byMerchant.innerHTML = DB.merchants.map(m=>{
       const custs = DB.customers.filter(c=>c.merchantId===m.id);
@@ -814,137 +736,65 @@ function renderReportsTab(){
 
   const activity = document.getElementById('reportActivity');
   const allHistory = [];
-  DB.customers.forEach(c=>{
-    (c.history||[]).forEach(h=> allHistory.push({...h, custName:c.name}));
-  });
+  DB.customers.forEach(c=>{ (c.history||[]).forEach(h=> allHistory.push({...h, custName:c.name})); });
   allHistory.sort((a,b)=> new Date(b.date) - new Date(a.date));
-  if(!allHistory.length){
-    activity.innerHTML = `<div class="empty-state"><p>لا توجد حركات مسجلة بعد</p></div>`;
-  } else {
-    activity.innerHTML = allHistory.slice(0,15).map(h=>`
-      <div class="seller-row" style="border-top:1px dashed var(--border);">
-        <span>${h.action} — ${h.custName}</span>
-        <span class="s-phone">${fmtDate(h.date)}</span>
-      </div>`).join('');
-  }
+  activity.innerHTML = !allHistory.length ? `<div class="empty-state"><p>لا توجد حركات</p></div>` :
+    allHistory.slice(0,15).map(h=>`<div class="seller-row"><span>${h.action} — ${h.custName}</span><span class="s-phone">${fmtDate(h.date)}</span></div>`).join('');
 }
 
-/* --- تقرير عملاء التاجر --- */
 function renderMerchantCustomersReport(){
   const sel = document.getElementById('rep_merchant');
-  const prevValue = sel.value;
-  if(!DB.merchants.length){
-    sel.innerHTML = `<option value="">لا يوجد تجار بعد</option>`;
-  } else {
-    sel.innerHTML = `<option value="">اختر التاجر لعرض عملائه...</option>` +
-      DB.merchants.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
-    sel.value = prevValue || '';
-  }
-  const merchantId = sel.value;
+  const prev = sel.value;
+  sel.innerHTML = !DB.merchants.length ? `<option value="">لا يوجد تجار</option>` :
+    `<option value="">اختر التاجر...</option>` + DB.merchants.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
+  sel.value = prev || '';
   const container = document.getElementById('merchantCustomersReport');
-  if(!merchantId){
-    container.innerHTML = `<div class="empty-state"><p>اختر تاجراً من القائمة أعلاه لعرض بيانات عملائه بالتفصيل</p></div>`;
-    return;
-  }
-  const custs = DB.customers.filter(c=>c.merchantId===merchantId).sort((a,b)=> new Date(a.dueDate)-new Date(b.dueDate));
-  if(!custs.length){
-    container.innerHTML = `<div class="empty-state"><p>لا يوجد عملاء لهذا التاجر بعد</p></div>`;
-    return;
-  }
-  container.innerHTML = custs.map(fullCustomerCardHTML).join('');
+  if(!sel.value){ container.innerHTML = `<div class="empty-state"><p>اختر تاجراً لعرض عملائه</p></div>`; return; }
+  const custs = DB.customers.filter(c=>c.merchantId===sel.value);
+  container.innerHTML = !custs.length ? `<div class="empty-state"><p>لا يوجد عملاء لهذا التاجر</p></div>` : custs.map(fullCustomerCardHTML).join('');
 }
 
-/* --- جدول تحصيل العملاء حسب الشهر لجميع التجار --- */
 function renderCollectionByMonthReport(){
   const container = document.getElementById('collectionByMonthReport');
   const active = DB.customers.filter(c=>c.status==='active');
-  if(!active.length){
-    container.innerHTML = `<div class="empty-state"><p>لا يوجد عملاء نشطون بعد</p></div>`;
-    return;
-  }
+  if(!active.length){ container.innerHTML = `<div class="empty-state"><p>لا يوجد عملاء نشطون</p></div>`; return; }
   const groups = {};
   active.forEach(c=>{
-    const key = (c.dueDate||'0000-00').slice(0,7);
-    if(!groups[key]) groups[key]=[];
-    groups[key].push(c);
+    const k = (c.dueDate||'0000-00').slice(0,7);
+    if(!groups[k]) groups[k]=[];
+    groups[k].push(c);
   });
-  const keys = Object.keys(groups).sort();
-  container.innerHTML = keys.map(key=>{
-    const [y,m] = key.split('-').map(Number);
+  container.innerHTML = Object.keys(groups).sort().map(k=>{
+    const [y,m] = k.split('-').map(Number);
     const label = new Date(y, (m||1)-1, 1).toLocaleDateString('ar-SA-u-ca-gregory', {year:'numeric', month:'long'});
-    const rows = groups[key].slice().sort((a,b)=> new Date(a.dueDate)-new Date(b.dueDate)).map(c=>{
-      const urg = dueUrgency(c);
-      const mi = merchantInfo(c.merchantId);
-      return `
-        <div class="seller-row" style="border-top:1px dashed var(--border); flex-direction:column; align-items:stretch; gap:2px; padding:9px 0; cursor:pointer;" onclick="openCustomer('${c.id}')">
-          <div style="display:flex; justify-content:space-between;">
-            <b>${c.name}</b><span class="${urg.cls}" style="font-size:11.5px;">${urg.text}</span>
-          </div>
-          <div style="font-size:11.5px; color:var(--text-dim); display:flex; justify-content:space-between;">
-            <span>${c.phone||'—'}</span><span>${mi.merchantName}</span>
-          </div>
-        </div>`;
-    }).join('');
-    return `
-      <div style="margin-bottom:14px;">
-        <div style="font-size:12.5px; font-weight:700; color:var(--gold-light); margin-bottom:2px;">${label} · ${groups[key].length} عميل</div>
-        ${rows}
-      </div>`;
+    const rows = groups[k].map(c=>`<div class="seller-row" onclick="openCustomer('${c.id}')" style="cursor:pointer;"><b>${c.name}</b><span>${fmtMoney(remaining(c))}</span></div>`).join('');
+    return `<div style="margin-bottom:14px;"><div style="font-size:12.5px; font-weight:700; color:var(--gold-light); margin-bottom:4px;">${label}</div>${rows}</div>`;
   }).join('');
 }
 
-/* --- تقرير المبالغ المستحقة خلال الشهر الحالي --- */
 function renderDueThisMonthReport(){
   const container = document.getElementById('dueThisMonthReport');
-  const totalEl = document.getElementById('dueMonthTotal');
   const now = new Date();
-  const y = now.getFullYear(), m = now.getMonth();
   const items = DB.customers.filter(c=>{
     if(c.status!=='active') return false;
     const d = new Date(c.dueDate+'T00:00:00');
-    return d.getFullYear()===y && d.getMonth()===m;
-  }).sort((a,b)=> new Date(a.dueDate)-new Date(b.dueDate));
-  const total = items.reduce((s,c)=>s+remaining(c),0);
-  totalEl.textContent = items.length ? fmtMoney(total) : '';
-  if(!items.length){
-    container.innerHTML = `<div class="empty-state"><p>لا توجد مبالغ مستحقة خلال هذا الشهر</p></div>`;
-    return;
-  }
-  container.innerHTML = items.map(c=>{
-    const mi = merchantInfo(c.merchantId);
-    return `
-      <div class="seller-row" style="border-top:1px dashed var(--border); flex-direction:column; align-items:stretch; gap:3px; padding:10px 0; cursor:pointer;" onclick="openCustomer('${c.id}')">
-        <div style="display:flex; justify-content:space-between; width:100%;">
-          <b>${c.name}</b><b style="color:var(--gold-light)">${fmtMoney(remaining(c))}</b>
-        </div>
-        <div style="font-size:11px; color:var(--text-dim);">${mi.merchantName} · استحقاق ${fmtDate(c.dueDate)}</div>
-      </div>`;
-  }).join('');
+    return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth();
+  });
+  document.getElementById('dueMonthTotal').textContent = items.length ? fmtMoney(items.reduce((s,c)=>s+remaining(c),0)) : '';
+  container.innerHTML = !items.length ? `<div class="empty-state"><p>لا توجد مستحقات هذا الشهر</p></div>` :
+    items.map(c=>`<div class="seller-row" onclick="openCustomer('${c.id}')" style="cursor:pointer;"><b>${c.name}</b><span style="color:var(--gold-light);">${fmtMoney(remaining(c))}</span></div>`).join('');
 }
 
-/* --- تقرير المبالغ التي تم تحصيلها --- */
 function renderCollectedReport(){
   const container = document.getElementById('collectedReport');
-  const totalEl = document.getElementById('collectedTotal');
   const all = [];
-  DB.customers.forEach(c=>{
-    (c.payments||[]).forEach(p=> all.push({...p, custName:c.name}));
-  });
+  DB.customers.forEach(c=>{ (c.payments||[]).forEach(p=> all.push({...p, custName:c.name})); });
   all.sort((a,b)=> new Date(b.date) - new Date(a.date));
-  const total = all.reduce((s,p)=>s+Number(p.amount||0),0);
-  totalEl.textContent = all.length ? fmtMoney(total) : '';
-  if(!all.length){
-    container.innerHTML = `<div class="empty-state"><p>لا توجد مبالغ محصّلة بعد</p></div>`;
-    return;
-  }
-  container.innerHTML = all.slice(0,30).map(p=>`
-    <div class="seller-row" style="border-top:1px dashed var(--border);">
-      <span>${p.custName}${p.note? ' — '+p.note : ''}</span>
-      <span class="s-phone">${fmtMoney(p.amount)} · ${fmtDate(p.date)}</span>
-    </div>`).join('');
+  document.getElementById('collectedTotal').textContent = all.length ? fmtMoney(all.reduce((s,p)=>s+Number(p.amount||0),0)) : '';
+  container.innerHTML = !all.length ? `<div class="empty-state"><p>لا توجد مدفوعات مسجلة</p></div>` :
+    all.slice(0,30).map(p=>`<div class="seller-row"><span>${p.custName}</span><span>${fmtMoney(p.amount)}</span></div>`).join('');
 }
 
-/* ======================= CUSTOMER MODAL ======================= */
 let currentCustomerId = null;
 function openCustomer(id){
   currentCustomerId = id;
@@ -954,38 +804,17 @@ function openCustomer(id){
   const st = statusLabel(c);
   const urg = dueUrgency(c);
   document.getElementById('mcTitle').textContent = c.name;
-
   document.getElementById('mcBody').innerHTML = `
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
       <span class="${urg.cls}" style="font-size:13px;">${urg.text}</span>
       <span class="status-pill ${st.cls}">${st.t}</span>
     </div>
     <div class="kv-grid">
-      <div class="kv"><div class="k">اسم العميل</div><div class="v">${c.name}</div></div>
-      <div class="kv"><div class="k">جوال العميل</div><div class="v">${c.phone||'—'}</div></div>
-      <div class="kv"><div class="k">اسم الكفيل</div><div class="v">${c.guarantorName||'—'}</div></div>
-      <div class="kv"><div class="k">جوال الكفيل</div><div class="v">${c.guarantorPhone||'—'}</div></div>
+      <div class="kv"><div class="k">العميل</div><div class="v">${c.name}</div></div>
+      <div class="kv"><div class="k">الجوال</div><div class="v">${c.phone||'—'}</div></div>
       <div class="kv"><div class="k">التاجر</div><div class="v">${mi.merchantName}</div></div>
-      <div class="kv"><div class="k">جوال التاجر</div><div class="v">${mi.merchantPhone}</div></div>
-      <div class="kv"><div class="k">مبلغ الشراء</div><div class="v">${c.purchaseAmount? fmtMoney(c.purchaseAmount):'—'}</div></div>
-      <div class="kv"><div class="k">مدة الشراء</div><div class="v">${c.purchaseDuration? c.purchaseDuration+' شهر':'—'}</div></div>
-      <div class="kv"><div class="k">تاريخ البيع</div><div class="v">${fmtDate(c.saleDate)}</div></div>
-      <div class="kv"><div class="k">تاريخ الاستحصال</div><div class="v ${urg.cls}">${fmtDate(c.dueDate)}</div></div>
-      <div class="kv" style="grid-column:1 / -1;"><div class="k">السند الإلكتروني</div><div class="v">${c.eReceipt||'—'}</div></div>
+      <div class="kv"><div class="k">المتبقي</div><div class="v" style="color:var(--gold-light);">${fmtMoney(remaining(c))}</div></div>
     </div>
-    <div class="panel" style="padding:14px; margin-bottom:14px;">
-      <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px;">
-        <span style="color:var(--text-dim)">المبلغ الإجمالي</span><b>${fmtMoney(c.totalAmount)}</b>
-      </div>
-      <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px;">
-        <span style="color:var(--text-dim)">المسدد</span><b style="color:#7fb26e">${fmtMoney(c.paidAmount||0)}</b>
-      </div>
-      <div style="display:flex; justify-content:space-between; font-size:13px;">
-        <span style="color:var(--text-dim)">المتبقي</span><b style="color:var(--gold-light)">${fmtMoney(remaining(c))}</b>
-      </div>
-      <div class="progress-bar" style="margin-top:10px;"><div class="progress-fill" style="width:${c.totalAmount>0?Math.min(100,Math.round((c.paidAmount||0)/c.totalAmount*100)):0}%"></div></div>
-    </div>
-
     <div class="btn-row">
       <button class="btn btn-gold" onclick="openPay()">سداد</button>
       <button class="btn btn-outline" onclick="openSettle()">تسوية</button>
@@ -993,196 +822,119 @@ function openCustomer(id){
     </div>
     <div style="height:8px;"></div>
     <div class="btn-row" style="grid-template-columns:1fr 1fr;">
-      <button class="btn btn-outline" onclick="openEdit()">✎ تعديل البيانات</button>
-      <a class="btn btn-outline" style="text-decoration:none; color:#4fce5d; border-color:rgba(79,206,93,0.3);"
-         href="${waLink(c.phone, 'مرحباً '+c.name+'، تذكير بموعد استحصال المبلغ المتبقي '+fmtMoney(remaining(c))+' بتاريخ '+fmtDate(c.dueDate)+'.')}"
-         target="_blank" rel="noopener">واتساب</a>
+      <button class="btn btn-outline" onclick="openEdit()">✎ تعديل</button>
+      <a class="btn btn-outline" style="text-decoration:none; color:#4fce5d;" href="${waLink(c.phone, 'تذكير بالمبلغ المتبقي '+fmtMoney(remaining(c)))}" target="_blank">واتساب</a>
     </div>
   `;
   openModal('modalCustomer');
 }
 
-/* ======================= EDIT ======================= */
 function openEdit(){
   const c = DB.customers.find(x=>x.id===currentCustomerId);
   document.getElementById('editBody').innerHTML = `
     <div class="field"><label>اسم العميل</label><input id="e_name" value="${c.name}"></div>
-    <div class="field"><label>جوال العميل</label><input id="e_phone" value="${c.phone||''}"></div>
-    <div class="field-row">
-      <div class="field"><label>اسم الكفيل</label><input id="e_guarName" value="${c.guarantorName||''}"></div>
-      <div class="field"><label>جوال الكفيل</label><input id="e_guarPhone" value="${c.guarantorPhone||''}"></div>
-    </div>
-    <div class="field"><label>التاجر</label>
-      <select id="e_merchant">${DB.merchants.map(m=>`<option value="${m.id}" ${m.id===c.merchantId?'selected':''}>${m.name}</option>`).join('')}</select>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>تاريخ البيع</label><input id="e_saleDate" type="date" value="${c.saleDate}"></div>
-      <div class="field"><label>تاريخ الاستحصال</label><input id="e_dueDate" type="date" value="${c.dueDate}"></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>مبلغ الشراء</label><input id="e_purchaseAmount" type="number" value="${c.purchaseAmount||0}"></div>
-      <div class="field"><label>مدة الشراء (بالأشهر)</label><input id="e_purchaseDuration" type="number" value="${c.purchaseDuration||0}"></div>
-    </div>
+    <div class="field"><label>الجوال</label><input id="e_phone" value="${c.phone||''}"></div>
     <div class="field"><label>المبلغ الإجمالي</label><input id="e_amount" type="number" value="${c.totalAmount}"></div>
-    <div class="field"><label>السند الإلكتروني (رقم أو اسم)</label><input id="e_eReceipt" value="${c.eReceipt||''}"></div>
     <button class="btn btn-gold" onclick="saveEdit()">حفظ التعديلات</button>
     <div style="height:8px;"></div>
-    <button class="btn btn-danger" onclick="deleteCustomer()">حذف بطاقة العميل</button>
+    <button class="btn btn-danger" onclick="deleteCustomer()">حذف العميل</button>
   `;
   openModal('modalEdit');
 }
+
 function saveEdit(){
   const c = DB.customers.find(x=>x.id===currentCustomerId);
   c.name = document.getElementById('e_name').value.trim();
   c.phone = document.getElementById('e_phone').value.trim();
-  c.guarantorName = document.getElementById('e_guarName').value.trim();
-  c.guarantorPhone = document.getElementById('e_guarPhone').value.trim();
-  c.merchantId = document.getElementById('e_merchant').value;
-  c.saleDate = document.getElementById('e_saleDate').value;
-  c.dueDate = document.getElementById('e_dueDate').value;
-  c.purchaseAmount = parseFloat(document.getElementById('e_purchaseAmount').value) || 0;
-  c.purchaseDuration = parseInt(document.getElementById('e_purchaseDuration').value) || 0;
   c.totalAmount = parseFloat(document.getElementById('e_amount').value) || c.totalAmount;
-  c.eReceipt = document.getElementById('e_eReceipt').value.trim();
-  c.history.push({date: todayISO(), action:'تعديل بيانات البطاقة'});
   saveDB();
   closeModal('modalEdit');
   openCustomer(c.id);
   renderAll();
-  toast('تم حفظ التعديلات');
+  toast('تم التعديل');
 }
+
 function deleteCustomer(){
-  if(!confirm('هل أنت متأكد من حذف بطاقة هذا العميل؟')) return;
+  if(!confirm('هل أنت متأكد من الحذف؟')) return;
   DB.customers = DB.customers.filter(x=>x.id!==currentCustomerId);
   saveDB();
   closeModal('modalEdit'); closeModal('modalCustomer');
   renderAll();
-  toast('تم حذف بطاقة العميل');
+  toast('تم الحذف');
 }
 
-/* ======================= PAYMENT ======================= */
 function openPay(){
   const c = DB.customers.find(x=>x.id===currentCustomerId);
   document.getElementById('payBody').innerHTML = `
-    <div class="kv-grid" style="grid-template-columns:1fr;">
-      <div class="kv"><div class="k">المتبقي حالياً</div><div class="v" style="font-size:17px; color:var(--gold-light)">${fmtMoney(remaining(c))}</div></div>
-    </div>
-    <div class="field"><label>المبلغ المسدد الآن</label><input id="p_amount" type="number" placeholder="0.00" inputmode="decimal"></div>
-    <div class="field"><label>ملاحظة (اختياري)</label><input id="p_note" placeholder="مثال: دفعة نقدية"></div>
+    <div class="field"><label>المبلغ المسدد</label><input id="p_amount" type="number" placeholder="0.00"></div>
     <button class="btn btn-gold" onclick="submitPayment()">تأكيد السداد</button>
   `;
   openModal('modalPay');
 }
+
 function submitPayment(){
   const c = DB.customers.find(x=>x.id===currentCustomerId);
   const amt = parseFloat(document.getElementById('p_amount').value);
-  const note = document.getElementById('p_note').value.trim();
-  if(!amt || amt<=0){ toast('الرجاء إدخال مبلغ صحيح'); return; }
+  if(!amt || amt<=0){ toast('أدخل مبلغاً صحيحاً'); return; }
   c.paidAmount = Number(c.paidAmount||0) + amt;
-  c.payments.push({date: todayISO(), amount: amt, note});
-  c.history.push({date: todayISO(), action:'سداد دفعة', note: fmtMoney(amt)});
-  const fullyPaid = c.paidAmount >= c.totalAmount;
-  if(fullyPaid){ c.status = 'paid'; c.history.push({date: todayISO(), action:'اكتمال السداد'}); }
+  c.payments.push({date: todayISO(), amount: amt});
+  if(c.paidAmount >= c.totalAmount) c.status = 'paid';
   saveDB();
   closeModal('modalPay');
+  openCustomer(c.id);
   renderAll();
-  if(fullyPaid){
-    openReceipt(c, amt);
-  } else {
-    openCustomer(c.id);
-    toast('تم تسجيل الدفعة بنجاح');
-  }
+  toast('تم السداد بنجاح');
 }
 
-/* ======================= SETTLEMENT ======================= */
 function openSettle(){
   const c = DB.customers.find(x=>x.id===currentCustomerId);
   document.getElementById('settleBody').innerHTML = `
-    <div class="kv-grid" style="grid-template-columns:1fr;">
-      <div class="kv"><div class="k">المتبقي قبل التسوية</div><div class="v" style="font-size:17px; color:var(--gold-light)">${fmtMoney(remaining(c))}</div></div>
-    </div>
-    <div class="field"><label>المبلغ النهائي المتفق عليه للتسوية</label><input id="s_amount" type="number" placeholder="0.00" inputmode="decimal"></div>
-    <div class="field"><label>سبب / تفاصيل التسوية</label><textarea id="s_note" rows="3" placeholder="مثال: تسوية بموافقة الطرفين بخصم..."></textarea></div>
+    <div class="field"><label>المبلغ النهائي للتسوية</label><input id="s_amount" type="number"></div>
     <button class="btn btn-gold" onclick="submitSettle()">تأكيد التسوية</button>
   `;
   openModal('modalSettle');
 }
+
 function submitSettle(){
   const c = DB.customers.find(x=>x.id===currentCustomerId);
   const amt = parseFloat(document.getElementById('s_amount').value);
-  const note = document.getElementById('s_note').value.trim();
-  if(amt===undefined || isNaN(amt) || amt<0){ toast('الرجاء إدخال مبلغ التسوية'); return; }
-  const paidSoFar = Number(c.paidAmount||0);
-  c.totalAmount = paidSoFar + amt;
+  if(isNaN(amt) || amt<0){ toast('أدخل مبلغاً صحيحاً'); return; }
+  c.totalAmount = Number(c.paidAmount||0) + amt;
   c.status = 'settled';
-  c.history.push({date: todayISO(), action:'تسوية الحساب', note: note || ('مبلغ متبقي بعد التسوية: '+fmtMoney(amt))});
   saveDB();
   closeModal('modalSettle');
   openCustomer(c.id);
   renderAll();
-  toast('تمت تسوية الحساب');
+  toast('تمت التسوية');
 }
 
-/* ======================= RESCHEDULE ======================= */
 function openReschedule(){
   const c = DB.customers.find(x=>x.id===currentCustomerId);
   document.getElementById('reschedBody').innerHTML = `
-    <div class="kv-grid" style="grid-template-columns:1fr;">
-      <div class="kv"><div class="k">تاريخ الاستحصال الحالي</div><div class="v">${fmtDate(c.dueDate)}</div></div>
-    </div>
-    <div class="field"><label>التاريخ الجديد للاستحصال</label><input id="r_date" type="date" value="${c.dueDate}"></div>
-    <div class="field"><label>سبب إعادة الجدولة</label><textarea id="r_note" rows="3" placeholder="مثال: طلب العميل تأجيل شهر إضافي"></textarea></div>
-    <button class="btn btn-gold" onclick="submitReschedule()">تأكيد الجدولة الجديدة</button>
+    <div class="field"><label>التاريخ الجديد</label><input id="r_date" type="date" value="${c.dueDate}"></div>
+    <button class="btn btn-gold" onclick="submitReschedule()">حفظ التاريخ</button>
   `;
   openModal('modalReschedule');
 }
+
 function submitReschedule(){
   const c = DB.customers.find(x=>x.id===currentCustomerId);
   const newDate = document.getElementById('r_date').value;
-  const note = document.getElementById('r_note').value.trim();
-  if(!newDate){ toast('الرجاء اختيار تاريخ جديد'); return; }
-  const oldDate = c.dueDate;
+  if(!newDate){ toast('اختر تاريخاً'); return; }
   c.dueDate = newDate;
-  c.history.push({date: todayISO(), action:'إعادة جدولة', note: `من ${fmtDate(oldDate)} إلى ${fmtDate(newDate)}${note? ' — '+note:''}`});
   saveDB();
   closeModal('modalReschedule');
   openCustomer(c.id);
   renderAll();
-  toast('تم تحديث تاريخ الاستحصال');
+  toast('تم تحديث التاريخ');
 }
 
-/* ======================= RECEIPT ======================= */
-function openReceipt(c, lastAmount){
-  const mi = merchantInfo(c.merchantId);
-  const msg = `سند تسديد - ركن سما\nالعميل: ${c.name}\nالمبلغ الإجمالي: ${fmtMoney(c.totalAmount)}\nتم السداد بالكامل بتاريخ ${fmtDate(todayISO())}\nشاكرين لكم حسن التعامل.`;
-  document.getElementById('receiptBody').innerHTML = `
-    <div class="receipt">
-      <div class="r-check">✓</div>
-      <div style="color:var(--gold-light); font-size:12px; font-weight:700; letter-spacing:.3px; margin-bottom:6px;">ركن سما</div>
-      <h3>تم السداد بالكامل</h3>
-      <div style="color:var(--text-dim); font-size:12.5px;">${c.name}</div>
-      <div class="r-amount">${fmtMoney(c.totalAmount)}</div>
-      <div class="r-line"><span>تاريخ السند</span><b>${fmtDate(todayISO())}</b></div>
-      <div class="r-line"><span>التاجر</span><b>${mi.merchantName}</b></div>
-      ${c.eReceipt? `<div class="r-line"><span>السند الإلكتروني</span><b>${c.eReceipt}</b></div>` : ''}
-      <div class="r-line"><span>رقم البطاقة</span><b>${c.id.slice(-6)}</b></div>
-    </div>
-    <div style="height:14px;"></div>
-    <a class="btn btn-gold" style="text-decoration:none;" href="${waLink(c.phone, msg)}" target="_blank" rel="noopener">إرسال السند إلى جوال العميل عبر واتساب</a>
-    <div style="height:8px;"></div>
-    <button class="btn btn-outline" onclick="closeModal('modalReceipt')">إغلاق</button>
-  `;
-  openModal('modalReceipt');
-}
-
-/* ======================= MODAL HELPERS ======================= */
 function openModal(id){ document.getElementById(id).classList.add('open'); }
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-backdrop').forEach(m=>{
   m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('open'); });
 });
 
-/* ======================= INIT ======================= */
 loadDB();
 </script>
 </body>
