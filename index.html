@@ -96,10 +96,6 @@
     border-color:var(--gold); color:#1a1608; font-weight:900;
     box-shadow:0 2px 8px rgba(201,162,39,0.25);
   }
-  .tab-btn.active:hover, .tab-btn.active:focus{
-    background:linear-gradient(180deg, var(--gold-light), var(--gold));
-    color:#1a1608;
-  }
 
   main{flex:1; padding:16px 14px 90px;}
   .view{display:none; animation:fadein .18s ease;}
@@ -228,16 +224,6 @@
   .kv .k{font-size:11px; color:var(--text-dim); margin-bottom:4px;}
   .kv .v{font-size:13.5px; font-weight:700;}
 
-  .receipt{
-    background:#181811; border:1px solid var(--gold-dim); border-radius:14px; padding:18px; text-align:center;
-  }
-  .receipt .r-check{width:50px; height:50px; border-radius:50%; background:var(--success-bg); color:#7fb26e;
-    display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 12px;}
-  .receipt h3{font-size:16px; color:var(--gold-light); margin-bottom:4px;}
-  .receipt .r-amount{font-size:26px; font-weight:900; color:var(--gold-light); margin:10px 0;}
-  .receipt .r-line{display:flex; justify-content:space-between; font-size:12.5px; padding:7px 0; border-top:1px dashed var(--border); color:var(--text-dim);}
-  .receipt .r-line b{color:var(--text); font-weight:700;}
-
   .section-label{font-size:12px; color:var(--text-dim); font-weight:700; margin:16px 0 8px;}
   .toast{
     position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--gold-light); color:#181500;
@@ -309,7 +295,7 @@
           <div class="field"><label>تاريخ الاستحصال</label><input id="f_dueDate" type="date"></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>مبلغ الشراء (ريال)</label><input id="f_purchaseAmount" placeholder="0.00" type="number" inputmode="decimal"></div>
+          <div class="field"><label>مبلغ الشراء الأساسي (ريال)</label><input id="f_purchaseAmount" placeholder="0.00" type="number" inputmode="decimal"></div>
           <div class="field"><label>مدة الشراء (بالأشهر)</label><input id="f_purchaseDuration" placeholder="مثال: 12" type="number" inputmode="numeric"></div>
         </div>
         <div class="field"><label>المبلغ الإجمالي (ريال)</label><input id="f_amount" placeholder="0.00" type="number" inputmode="decimal"></div>
@@ -336,11 +322,11 @@
     <div class="view" id="view-reports">
       <div class="stat-grid" id="reportStats"></div>
       <div class="panel">
-        <div class="panel-title">التحصيل حسب التاجر</div>
-        <div id="reportByMerchant"></div>
+        <div class="panel-title">التقرير المفصل للتاجر (عدد العملاء والمبيعات)</div>
+        <div id="reportByMerchantDetailed"></div>
       </div>
       <div class="panel">
-        <div class="panel-title">تقرير عملاء التاجر</div>
+        <div class="panel-title">تقرير عملاء التاجر المحدد</div>
         <div class="field" style="margin-bottom:12px;"><select id="rep_merchant" onchange="renderMerchantCustomersReport()"></select></div>
         <div id="merchantCustomersReport"></div>
       </div>
@@ -402,14 +388,6 @@
     <div class="modal-handle"></div>
     <div class="modal-head"><h2>إعادة جدولة الاستحصال</h2><button class="modal-close" onclick="closeModal('modalReschedule')">✕</button></div>
     <div id="reschedBody"></div>
-  </div>
-</div>
-
-<div class="modal-backdrop" id="modalReceipt">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-head"><h2>سند السداد</h2><button class="modal-close" onclick="closeModal('modalReceipt')">✕</button></div>
-    <div id="receiptBody"></div>
   </div>
 </div>
 
@@ -579,7 +557,7 @@ function fullCustomerCardHTML(c){
         <div class="kv"><div class="k">جوال التاجر</div><div class="v">${mi.merchantPhone}</div></div>
         <div class="kv"><div class="k">تاريخ البيع</div><div class="v">${fmtDate(c.saleDate)}</div></div>
         <div class="kv"><div class="k">تاريخ الاستحصال</div><div class="v ${urg.cls}">${fmtDate(c.dueDate)}</div></div>
-        <div class="kv"><div class="k">مبلغ الشراء</div><div class="v">${c.purchaseAmount? fmtMoney(c.purchaseAmount):'—'}</div></div>
+        <div class="kv"><div class="k">مبلغ الشراء الأساسي</div><div class="v">${c.purchaseAmount? fmtMoney(c.purchaseAmount):'—'}</div></div>
         <div class="kv"><div class="k">مدة الشراء</div><div class="v">${c.purchaseDuration? c.purchaseDuration+' شهر':'—'}</div></div>
         <div class="kv"><div class="k">المبلغ الإجمالي</div><div class="v">${fmtMoney(c.totalAmount)}</div></div>
         <div class="kv"><div class="k">المتبقي</div><div class="v">${fmtMoney(remaining(c))}</div></div>
@@ -647,7 +625,7 @@ function saveNewCustomer(){
   if(!name || !phone){ toast('الرجاء إدخال اسم العميل وجواله'); return; }
   if(!merchantId){ toast('الرجاء اختيار التاجر'); return; }
   if(!saleDate || !dueDate){ toast('الرجاء إدخال التواريخ'); return; }
-  if(!amount || amount<=0){ toast('الرجاء إدخال مبلغ صحيح'); return; }
+  if(!amount || amount<=0){ toast('الرجاء إدخال مبلغ إجمالي صحيح'); return; }
 
   const c = {
     id: uid(), name, phone, guarantorName: guarName, guarantorPhone: guarPhone,
@@ -707,23 +685,29 @@ function renderReportsTab(){
     <div class="stat-card"><div class="label">عقود مسددة</div><div class="value">${paidCount}</div></div>
   `;
 
-  const byMerchant = document.getElementById('reportByMerchant');
+  // Detailed Merchant Report
+  const byMerchantDetailed = document.getElementById('reportByMerchantDetailed');
   if(!DB.merchants.length){
-    byMerchant.innerHTML = `<div class="empty-state"><p>لا توجد بيانات تجار</p></div>`;
+    byMerchantDetailed.innerHTML = `<div class="empty-state"><p>لا توجد بيانات تجار</p></div>`;
   } else {
-    byMerchant.innerHTML = DB.merchants.map(m=>{
+    byMerchantDetailed.innerHTML = DB.merchants.map(m=>{
       const custs = DB.customers.filter(c=>c.merchantId===m.id);
-      const sales = custs.reduce((s,c)=>s+Number(c.totalAmount||0),0);
+      const baseSales = custs.reduce((s,c)=>s+Number(c.purchaseAmount||0),0);
+      const totalSales = custs.reduce((s,c)=>s+Number(c.totalAmount||0),0);
       const collected = custs.reduce((s,c)=>s+Number(c.paidAmount||0),0);
-      const pct = sales>0? Math.round((collected/sales)*100):0;
+      
       return `
-        <div style="margin-bottom:14px;">
-          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
-            <b>${m.name}</b><span style="color:var(--text-dim)">${custs.length} عميل</span>
+        <div style="background:var(--bg-panel-2); border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <b style="color:var(--gold-light); font-size:14px;">${m.name}</b>
+            <span class="status-pill active">عدد العملاء: ${custs.length}</span>
           </div>
-          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-          <div style="display:flex; justify-content:space-between; font-size:11.5px; color:var(--text-dim); margin-top:5px;">
-            <span>محصّل ${fmtMoney(collected)}</span><span>من ${fmtMoney(sales)}</span>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12.5px; border-top:1px dashed var(--border); padding-top:8px;">
+            <div>مبيعات أساسية: <b style="color:var(--text);">${fmtMoney(baseSales)}</b></div>
+            <div>مبيعات إجمالية: <b style="color:var(--gold-light);">${fmtMoney(totalSales)}</b></div>
+          </div>
+          <div style="font-size:11.5px; color:var(--text-dim); margin-top:6px;">
+            المحصّل: ${fmtMoney(collected)} | المتبقي: ${fmtMoney(totalSales - collected)}
           </div>
         </div>`;
     }).join('');
@@ -834,6 +818,7 @@ function openEdit(){
   document.getElementById('editBody').innerHTML = `
     <div class="field"><label>اسم العميل</label><input id="e_name" value="${c.name}"></div>
     <div class="field"><label>الجوال</label><input id="e_phone" value="${c.phone||''}"></div>
+    <div class="field"><label>مبلغ الشراء الأساسي</label><input id="e_purchase" type="number" value="${c.purchaseAmount||0}"></div>
     <div class="field"><label>المبلغ الإجمالي</label><input id="e_amount" type="number" value="${c.totalAmount}"></div>
     <button class="btn btn-gold" onclick="saveEdit()">حفظ التعديلات</button>
     <div style="height:8px;"></div>
@@ -846,6 +831,7 @@ function saveEdit(){
   const c = DB.customers.find(x=>x.id===currentCustomerId);
   c.name = document.getElementById('e_name').value.trim();
   c.phone = document.getElementById('e_phone').value.trim();
+  c.purchaseAmount = parseFloat(document.getElementById('e_purchase').value) || c.purchaseAmount;
   c.totalAmount = parseFloat(document.getElementById('e_amount').value) || c.totalAmount;
   saveDB();
   closeModal('modalEdit');
@@ -918,13 +904,14 @@ function openReschedule(){
 }
 
 function submitReschedule(){
-  const c = DB.customers.find(x=>x.id===currentCustomerId);
+  const c = DB.customers.find(x=>x.id===currentDashboardId||x.id===currentCustomerId);
+  const cObj = DB.customers.find(x=>x.id===currentCustomerId);
   const newDate = document.getElementById('r_date').value;
   if(!newDate){ toast('اختر تاريخاً'); return; }
-  c.dueDate = newDate;
+  cObj.dueDate = newDate;
   saveDB();
   closeModal('modalReschedule');
-  openCustomer(c.id);
+  openCustomer(cObj.id);
   renderAll();
   toast('تم تحديث التاريخ');
 }
